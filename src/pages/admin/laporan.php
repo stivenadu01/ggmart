@@ -3,7 +3,7 @@ $pageTitle = "Laporan";
 include INCLUDES_PATH . "admin/layout/header.php";
 ?>
 
-<div x-data="laporanPage()" x-init="fetchProduk()" class="bg-gray-50 min-h-[100dvh] p-4 lg:p-6 space-y-4">
+<div x-data="laporanPage()" x-init="fetchProduk()" class="bg-gray-50 p-4 lg:p-6 space-y-4">
   <!-- HEADER -->
   <div>
     <h1 class="text-2xl font-extrabold text-gray-800 tracking-tight">Laporan</h1>
@@ -117,14 +117,14 @@ include INCLUDES_PATH . "admin/layout/header.php";
       </button>
 
       <!-- Excel -->
-      <button @click="cetakLaporan('csv')"
+      <button @click="cetakLaporan('excel')"
         class="flex items-center px-4 py-2 bg-green-600 hover:bg-green-600/80 text-white rounded-lg shadow-md transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M4 4h16v16H4V4zm4 4l8 8m0-8l-8 8" />
         </svg>
-        Export CSV
+        Export EXCEL
       </button>
     </div>
   </div>

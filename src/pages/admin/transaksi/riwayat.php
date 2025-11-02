@@ -128,9 +128,9 @@ include INCLUDES_PATH . "admin/layout/header.php";
                       <td x-text="d.nama_produk"></td>
                       <td class="text-center" x-text="d.jumlah"></td>
                       <td class="text-right" x-text="formatRupiah(d.harga_pokok)"></td>
-                      <td class="text-right font-bold" x-text="formatRupiah(d.harga_satuan)"></td>
+                      <td class="text-right font-medium" x-text="formatRupiah(d.harga_satuan)"></td>
                       <td class="text-right" x-text="formatRupiah(d.subtotal_pokok)"></td>
-                      <td class="text-right font-bold" x-text="formatRupiah(d.subtotal)"></td>
+                      <td class="text-right font-medium" x-text="formatRupiah(d.subtotal)"></td>
                       <td class="text-right text-green-600 font-bold" x-text="formatRupiah(parseFloat(d.subtotal) - parseFloat(d.subtotal_pokok))"></td>
                     </tr>
                   </template>
