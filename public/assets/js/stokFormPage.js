@@ -83,6 +83,9 @@ const stokFormPage = () => ({
       this.form.harga_pokok = this.form.total_pokok / j;
     } else if (source === 'harga') {
       this.form.total_pokok = this.form.harga_pokok * j;
+    } else if (source === 'jumlah') {
+      this.form.total_pokok = 0;
+      this.form.harga_pokok = 0;
     }
   },
 
@@ -91,7 +94,7 @@ const stokFormPage = () => ({
       this.submitting = true;
       const formData = new FormData();
       for (let key in this.form) formData.append(key, this.form[key]);
-      formData.append('sisa_stok', this.form.jumlah);
+      if (this.form.type == 'masuk') formData.append('sisa_stok', this.form.jumlah);
 
       const res = await fetch(`${baseUrl}/api/mutasiStok`, { method: "POST", body: formData });
       const data = await res.json();

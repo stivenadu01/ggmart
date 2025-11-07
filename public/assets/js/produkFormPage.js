@@ -6,14 +6,15 @@ function produkFormPage(act, id) {
     submitting: false,
     isEdit: act === 'edit',
     formTitle: act === 'edit' ? 'Edit Produk' : 'Tambah Produk',
-
+    fileName: '',
     form: {
       id_kategori: '',
       nama_produk: '',
       harga_jual: '',
       satuan_dasar: '',
       deskripsi: '',
-      gambar: null
+      is_lokal: 0,
+      gambar: ''
     },
 
     async initPage() {
@@ -33,7 +34,9 @@ function produkFormPage(act, id) {
       const data = await res.json();
       if (data.success) {
         this.form = { ...data.data }
-        if (data.data.gambar) this.preview = `${uploadsUrl}/${data.data.gambar}`;
+        if (data.data.gambar) {
+          this.preview = `${uploadsUrl}/${data.data.gambar}`;
+        };
       } else {
         showFlash(data.message, 'warning');
       }
@@ -43,6 +46,7 @@ function produkFormPage(act, id) {
       const file = e.target.files[0];
       if (file) {
         this.form.gambar = file;
+        this.fileName = file.name;
         this.preview = URL.createObjectURL(file);
       }
     },
@@ -55,6 +59,7 @@ function produkFormPage(act, id) {
         for (const key in this.form) {
           formData.append(key, this.form[key]);
         }
+
         if (this.isEdit) formData.append("_method", "PUT");
 
         const url = this.isEdit

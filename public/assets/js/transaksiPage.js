@@ -7,6 +7,56 @@ function transaksiPage() {
     metodeBayar: 'tunai',
     submitting: false,
 
+    init() {
+      // === Fokus ke input pencarian pakai Ctrl+K ===
+      window.addEventListener('keydown', (e) => {
+        // Fokus pencarian
+        if (e.ctrlKey && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          this.$refs.searchInput.focus();
+          return;
+        }
+
+        // === Shortcut F2: Tunai ===
+        if (e.key === 'F2') {
+          e.preventDefault();
+          this.metodeBayar = 'tunai';
+          showFlash('Metode pembayaran: Tunai', 'info');
+          return;
+        }
+
+        // === Shortcut F3: QRIS ===
+        if (e.key === 'F3') {
+          e.preventDefault();
+          this.metodeBayar = 'qris';
+          showFlash('Metode pembayaran: QRIS', 'info');
+          return;
+        }
+
+        // === Shortcut Ctrl + Enter: Simpan & Cetak ===
+        if (e.ctrlKey && e.key === 'Enter') {
+          e.preventDefault();
+          this.simpanTransaksi(true);
+          return;
+        }
+
+        // === Shortcut Ctrl + s : Simpan tanpa cetak ===
+        if (e.ctrlKey && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          this.simpanTransaksi(false);
+          return;
+        }
+
+        if (e.key === 'Delete') {
+          e.preventDefault();
+          this.hapusKeranjang();
+          return;
+        }
+
+      });
+    },
+
+
     async fetchProduk() {
       if (!this.search.trim()) return;
       const res = await fetch(`${baseUrl}/api/produk?mode=trx&search=${encodeURIComponent(this.search)}`);
@@ -22,8 +72,6 @@ function transaksiPage() {
 
       if (produkDitemukan) {
         this.tambahKeranjang(produkDitemukan);
-        this.search = '';
-        this.search.focus();
       } else {
         showFlash(`Produk "${this.search}" tidak ditemukan!`, 'warning');
       }
@@ -50,7 +98,9 @@ function transaksiPage() {
         });
       }
       this.produk = [];
+      this.search = '';
       this.hitungTotal();
+      this.$refs.searchInput.focus();
     },
 
     updateSubtotal(index) {

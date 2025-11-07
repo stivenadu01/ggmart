@@ -24,7 +24,7 @@
   }"
   x-on:keydown.window="
     if($event.key === 'Escape') { fullscreen = false;}
-    if ($event.key === 'F') {
+    if ($event.key === 'F11') {
       $event.preventDefault();
       fullscreen = !fullscreen;
     }

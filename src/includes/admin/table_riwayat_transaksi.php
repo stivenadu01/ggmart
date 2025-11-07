@@ -1,7 +1,14 @@
 <!-- RIWAYAT TRANSAKSI -->
-<template x-if="!loading && transaksi.length > 0">
-  <div class="space-y-3">
-    <!-- INFO FILTER & RINGKASAN TOTAL -->
+<div class="space-y-3 relative">
+  <!-- LOADING OVERLAY -->
+  <template x-if="loading">
+    <div class="absolute inset-0 text-gg-primary top-32 z-10 flex justify-center">
+      <span class="w-12 h-12" x-html="icon('loading')"></span>
+    </div>
+  </template>
+
+  <!-- INFO FILTER & RINGKASAN TOTAL -->
+  <template x-if="!loading">
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-gray-700 space-y-3">
 
       <!-- Bagian Informasi Filter -->
@@ -56,25 +63,26 @@
         </p>
       </div>
     </div>
+  </template>
 
+  <div class="overflow-auto max-h-[80dvh] custom-scrollbar bg-white rounded-xl shadow-lg border border-gray-100">
+    <table class="app-table min-w-full text-sm text-gray-700">
+      <thead class="sticky top-0 bg-gray-100">
+        <tr>
+          <th>#</th>
+          <th>Kode Transaksi</th>
+          <th>Tanggal</th>
+          <th>Kasir</th>
+          <th class="text-right">Total Pokok/Beli</th>
+          <th class="text-right">Total Harga/Jual</th>
+          <th class="text-center">Metode Bayar</th>
+          <th class="text-right">Total Laba</th>
+          <th class="text-center">Aksi</th>
+        </tr>
+      </thead>
 
-    <div class="overflow-auto max-h-[80dvh] custom-scrollbar bg-white rounded-xl shadow-lg border border-gray-100">
-      <table class="app-table min-w-full text-sm text-gray-700">
-        <thead class="sticky top-0 bg-gray-100">
-          <tr>
-            <th>#</th>
-            <th>Kode Transaksi</th>
-            <th>Tanggal</th>
-            <th>Kasir</th>
-            <th class="text-right">Total Pokok/Beli</th>
-            <th class="text-right">Total Harga/Jual</th>
-            <th class="text-center">Metode Bayar</th>
-            <th class="text-right">Total Laba</th>
-            <th class="text-center">Aksi</th>
-          </tr>
-        </thead>
-
-        <tbody>
+      <tbody>
+        <template x-if="!loading && transaksi.length > 0">
           <template x-for="t, i in transaksi" :key="t.kode_transaksi">
             <tr class="border-b hover:bg-gray-50 transition">
               <!-- NO -->
@@ -115,45 +123,39 @@
               <td class="text-center">
                 <div class="flex justify-center items-center gap-2">
                   <button @click="lihatDetail(t.kode_transaksi)"
-                    class="text-blue-600 hover:text-blue-800 transition p-1 rounded-full"
+                    class="text-blue-600 flex items-center hover:text-blue-800 transition p-1 rounded-full"
                     title="Detail Transaksi">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z" />
-                    </svg>
+                    <span class="h-5 w-5" x-html="icon('mata')"></span>
                     <span class="hidden md:inline-block font-normal"> Detail</span>
                   </button>
                 </div>
               </td>
             </tr>
           </template>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- PAGINATION -->
-    <template x-if="!loading && transaksi.length > 0">
-      <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
-        <p class="text-sm text-gray-500" x-text="`Menampilkan ${transaksi.length} dari ${pagination.total} transaksi`"></p>
-        <div class="flex flex-wrap gap-2">
-          <button @click="prevPage" :disabled="pagination.page === 1"
-            class="btn px-3 py-1 w-auto shadow-none bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200">‹</button>
-
-          <template x-for="n in pagination.total_pages" :key="n">
-            <button @click="goPage(n)"
-              :class="pagination.page == n ? 'bg-gg-primary text-white shadow-sm' : 'border border-gray-300 text-gray-700 hover:bg-gray-100'"
-              class="btn px-3 py-1 w-auto shadow-none rounded-md">
-              <span x-text="n"></span>
-            </button>
-          </template>
-
-          <button @click="nextPage" :disabled="pagination.page == pagination.total_pages"
-            class="btn px-3 py-1 w-auto shadow-none bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200">›</button>
-        </div>
-      </div>
-    </template>
+        </template>
+      </tbody>
+    </table>
   </div>
-</template>
+
+  <!-- PAGINATION -->
+  <template x-if="!loading && transaksi.length > 0">
+    <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+      <p class="text-sm text-gray-500" x-text="`Menampilkan ${transaksi.length} dari ${pagination.total} transaksi`"></p>
+      <div class="flex flex-wrap gap-2">
+        <button @click="prevPage" :disabled="pagination.page === 1"
+          class="btn px-3 py-1 w-auto shadow-none bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200">‹</button>
+
+        <template x-for="n in pagination.total_pages" :key="n">
+          <button @click="goPage(n)"
+            :class="pagination.page == n ? 'bg-gg-primary text-white shadow-sm' : 'border border-gray-300 text-gray-700 hover:bg-gray-100'"
+            class="btn px-3 py-1 w-auto shadow-none rounded-md">
+            <span x-text="n"></span>
+          </button>
+        </template>
+
+        <button @click="nextPage" :disabled="pagination.page == pagination.total_pages"
+          class="btn px-3 py-1 w-auto shadow-none bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200">›</button>
+      </div>
+    </div>
+  </template>
+</div>

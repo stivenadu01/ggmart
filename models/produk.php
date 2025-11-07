@@ -83,10 +83,10 @@ function getProdukList($page = 1, $limit = 10, $search = '', $order_by = 'tangga
 function tambahProduk($data)
 {
   global $conn;
-  $sql = "INSERT INTO produk (kode_produk, id_kategori, nama_produk, deskripsi, harga_jual, stok, gambar, satuan_dasar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+  $sql = "INSERT INTO produk (kode_produk, id_kategori, nama_produk, deskripsi, harga_jual, stok, gambar, satuan_dasar, is_lokal) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
   $stmt = $conn->prepare($sql);
   $stmt->bind_param(
-    "sissdiss",
+    "sissdissi",
     $data['kode_produk'],
     $data['id_kategori'],
     $data['nama_produk'],
@@ -94,7 +94,8 @@ function tambahProduk($data)
     $data['harga_jual'],
     $data['stok'],
     $data['gambar'],
-    $data['satuan_dasar']
+    $data['satuan_dasar'],
+    $data['is_lokal']
   );
   $res = $stmt->execute();
   $stmt->close();
@@ -104,7 +105,7 @@ function tambahProduk($data)
 function editProduk($kode, $data)
 {
   global $conn;
-  $allowed = ['nama_produk', 'id_kategori', 'deskripsi', 'harga_jual', 'stok', 'terjual', 'gambar', 'satuan_dasar'];
+  $allowed = ['nama_produk', 'id_kategori', 'deskripsi', 'harga_jual', 'stok', 'terjual', 'gambar', 'satuan_dasar', 'is_lokal'];
   $set = [];
   $params = [];
   $types = '';
@@ -113,7 +114,7 @@ function editProduk($kode, $data)
     if (isset($data[$col])) {
       $set[] = "$col = ?";
       $params[] = $data[$col];
-      $types .= in_array($col, ['id_kategori', 'stok', 'terjual']) ? 'i' : (in_array($col, ['harga_jual']) ? 'd' : 's');
+      $types .= in_array($col, ['id_kategori', 'stok', 'terjual', 'is_lokal']) ? 'i' : (in_array($col, ['harga_jual']) ? 'd' : 's');
     }
   }
 
@@ -141,13 +142,22 @@ function hapusProduk($kode)
 }
 
 // tambahan
-function updateStokProduk($kode)
+function updateStokProduk($kode_produk)
 {
   global $conn;
-  $stok = $conn->query("SELECT SUM(sisa_stok) as total FROM mutasi_stok where kode_produk='$kode' AND type='masuk'")->fetch_assoc()['total'];
+  $res = $conn->query("SELECT SUM(sisa_stok) AS total FROM mutasi_stok WHERE kode_produk='$kode_produk' AND type='masuk'");
+  $stok = $res->fetch_assoc()['total'];
 
-  return $conn->query("UPDATE produk SET stok = '$stok' WHERE kode_produk='$kode'");
+  if (!$stok) {
+    $stok = 0;
+  }
+
+  // Pastikan integer
+  $stok = (int)$stok;
+
+  return $conn->query("UPDATE produk SET stok=$stok WHERE kode_produk='$kode_produk'");
 }
+
 
 function getProdukTrx($search)
 {

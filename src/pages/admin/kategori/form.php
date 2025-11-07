@@ -1,4 +1,5 @@
 <?php
+page_require(['admin']);
 $act = $_GET['act'] ?? 'tambah';
 $id  = $_GET['id'] ?? null;
 $pageTitle = ($act === 'edit') ? "Edit Kategori" : "Tambah Kategori";
@@ -27,15 +28,12 @@ include INCLUDES_PATH . "/admin/layout/header.php";
       </div>
 
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-        <a :href="baseUrl + '/admin/kategori'"
-          class="w-auto btn px-5 py-2 btn-gray">Batal</a>
         <button type="submit"
-          class="btn btn-primary px-5 py-2 w-auto"
-          x-text="isEdit ? 'Simpan Perubahan' : 'Tambah Kategori'"></button>
+          class="btn btn-primary px-5 gap-2 py-2 w-auto"><span class="h-5 w-5" x-html="icon('save')"></span>Simpan</button>
       </div>
     </form>
   </div>
 </div>
 
-<script src="<?= ASSETS_URL . 'js/kategoriFormPage.js' ?>"></script>
+<script src=" <?= ASSETS_URL . 'js/kategoriFormPage.js' ?>"></script>
 <?php include INCLUDES_PATH . "admin/layout/footer.php"; ?>

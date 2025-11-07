@@ -1,4 +1,5 @@
 <?php
+page_require(['admin', 'manager']);
 $pageTitle = "Riwayat Transaksi";
 include INCLUDES_PATH . "admin/layout/header.php";
 ?>
@@ -14,11 +15,7 @@ include INCLUDES_PATH . "admin/layout/header.php";
     <div class="flex items-center gap-3">
       <button @click="filter.show = !filter.show"
         class="md:hidden btn btn-gray w-auto flex items-center gap-1 rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 14.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-2.586L3.293 6.707A1 1 0 013 6V4z" />
-        </svg>
+        <span class="w-4 h-4 fill-current" x-html="icon('filter')"></span>
         Filter
       </button>
     </div>
@@ -61,19 +58,14 @@ include INCLUDES_PATH . "admin/layout/header.php";
         <button type="button"
           @click="resetFilter"
           :disabled="!filter.search && !filter.start  && !filter.end && !filter.metode"
-          class="btn btn-gray gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M21 12a9 9 0 11-9-9v3m0-3l-3 3m3-3l3 3" />
-          </svg>
+          class="btn btn-gray flex items-center justify-center gap-2 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span x-html="icon('refresh')" class="w-4 h-4 text-gray-400"></span>
           <span>Reset</span>
         </button>
       </div>
     </div>
   </div>
 
-  <?php include INCLUDES_PATH . "/loading.php" ?>
 
   <?php include INCLUDES_PATH . "/admin/table_riwayat_transaksi.php" ?>
 
@@ -94,6 +86,12 @@ include INCLUDES_PATH . "admin/layout/header.php";
         <div class="flex justify-between items-center border-b pb-3 border-gray-200">
           <h2 class="text-xl font-extrabold text-gray-800">Detail Transaksi</h2>
         </div>
+
+        <template x-if="loadingDetail">
+          <div class="text-gg-primary w-4 h-4">
+            <span class="w-4 h-4 fill-current" x-html="icon('loading')"></span>
+          </div>
+        </template>
 
         <template x-if="detail && !loadingDetail">
           <div class="space-y-3">
@@ -155,33 +153,18 @@ include INCLUDES_PATH . "admin/layout/header.php";
           </div>
         </template>
 
-        <template x-if="loadingDetail">
-          <div>
-            <span>
-              <svg class="animate-spin h-8 w-8 text-gg-primary" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-              </svg>
-            </span>
-            Memuat...
-          </div>
-        </template>
-
         <div class="justify-end flex gap-3 pt-3">
           <button
             @click="cetakUlang(detail.kode_transaksi)"
             class="bg-blue-600 text-white btn hover:bg-blue-700 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2v5H5v-5H3V7h18v10M5 12h14M12 17V7" />
-            </svg>
+            <span class="w-5 h-5 fill-current" x-html="icon('cetak')"></span>
             <span>Cetak Ulang Struk</span>
           </button>
           <button @click="modalDetail=false"
             class="bg-gray-200 hover:bg-gray-300 text-gray-700 btn">Tutup</button>
         </div>
       </div>
+    </div>
   </template>
 </div>
 

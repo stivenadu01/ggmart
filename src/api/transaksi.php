@@ -12,6 +12,7 @@ $status = 200;
 switch ($method) {
   // GET /api/transaksi?
   case 'GET':
+    api_require(['admin', 'manager']);
     try {
       // detail transaksi
       if ($kode_transaksi && isset($_GET['mode']) && $_GET['mode'] == 'detail') {
@@ -50,6 +51,7 @@ switch ($method) {
 
   // POST /api/transaksi
   case 'POST':
+    api_require(['admin', 'kasir']);
     global $conn;
     $conn->begin_transaction();
     try {
@@ -126,15 +128,7 @@ switch ($method) {
     }
     break;
 
-  // DELETE /api/transaksi?k=1
-  case 'DELETE':
-    try {
-      $res = ['success' => true, 'message' => 'transaksi berhasil dihapus'];
-    } catch (Exception $e) {
-      $status = $e->getCode() ?: 500;
-      $res = ['success' => false, 'message' => $e->getMessage()];
-    }
-    break;
+
 
   default:
     $status = 405;

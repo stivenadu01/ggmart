@@ -50,6 +50,7 @@ switch ($method) {
 
   // POST /api/kategori
   case 'POST':
+    api_require(['admin']);
     try {
       if (empty($input_data['nama_kategori'])) {
         throw new Exception('Nama kategori wajib diisi.', 422);
@@ -72,6 +73,7 @@ switch ($method) {
 
   // PUT /api/kategori?k=1
   case 'PUT':
+    api_require(['admin']);
     try {
       if (!$id_kategori) throw new Exception('ID kategori wajib diisi untuk update.', 400);
       if (empty($input_data['nama_kategori'])) {
@@ -94,6 +96,7 @@ switch ($method) {
 
   // DELETE /api/kategori?k=1
   case 'DELETE':
+    api_require(['admin']);
     try {
       if (!$id_kategori) throw new Exception('ID kategori wajib diisi untuk delete.', 400);
 
@@ -107,7 +110,7 @@ switch ($method) {
       $res = ['success' => true, 'message' => 'Kategori berhasil dihapus'];
     } catch (Exception $e) {
       $status = $e->getCode() ?: 500;
-      $res = ['success' => false, 'message' => $e->getMessage()];
+      $res = ['success' => false, 'message' => "Coba pastikan tidak ada produk dari kategori ini"];
     }
     break;
 

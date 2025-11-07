@@ -4,6 +4,7 @@
 
 @layer base {
 
+
   /* RESET FONT FAMILY */
   body {
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
@@ -23,7 +24,7 @@
   input:not([type="checkbox"]):not([type="radio"]):not(.input-trx),
   textarea,
   select {
-    @apply w-full border-gray-400 rounded-lg px-3 py-2 text-sm text-gray-800 shadow-sm focus:ring-2 focus:ring-gg-primary focus:border-gg-primary focus:outline-none transition-colors duration-200;
+    @apply w-full border border-gray-500/50 rounded-lg px-3 py-2 text-sm text-gray-800 shadow-sm focus:ring-1 focus:ring-gg-primary/80 focus:border-gg-primary/80 focus:outline-none transition-colors duration-200;
   }
 
   /* LABEL */
@@ -33,7 +34,6 @@
 }
 
 @layer components {
-
   .btn {
     @apply px-4 py-2.5 rounded-lg shadow-md transition-all duration-300;
   }
@@ -64,6 +64,11 @@
   .app-table tbody td {
     @apply px-4 py-3 whitespace-nowrap text-gray-700;
   }
+
+  /* === Shortcut Key Style === */
+    .shortcut-key {
+      @apply font-sans text-[11px] font-semibold px-1.5 py-[1px] rounded-md border border-gray-300/70 bg-gradient-to-b from-gray-50 to-gray-100 text-gray-700 shadow-sm inline-flex items-center justify-center align-middle select-none capitalize tracking-wide;
+    }
 }
 
 @layer utilities {

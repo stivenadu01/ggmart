@@ -1,4 +1,5 @@
 <?php
+page_require(['admin', 'manager']);
 $pageTitle = "Kelola Kategori";
 include INCLUDES_PATH . "admin/layout/header.php";
 ?>
@@ -18,27 +19,20 @@ include INCLUDES_PATH . "admin/layout/header.php";
             placeholder="Cari kategori..."
             class="w-full form-input h-10 border border-gray-300 rounded-lg pl-10 pr-4 text-sm focus:border-gg-primary focus:ring-gg-primary">
           <span>
-            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer">
-              <svg class="w-4 h-4 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400">
+              <span class="w-4 h-4" x-html="icon('cari')"></span>
             </button>
           </span>
         </div>
       </form>
 
-      <a :href="baseUrl + '/admin/kategori/form?act=tambah'"
-        class="btn btn-accent w-auto py-1.5">
-        <span class="me-1">+</span>
+      <a x-show="hasRole(['admin'])" :href="baseUrl + '/admin/kategori/form?act=tambah'"
+        class="btn btn-accent w-auto">
+        <span class="me-1 w-4 h-4" x-html="icon('tambah')"></span>
         <span class="hidden md:inline me-1">Tambah</span>Kategori
       </a>
     </div>
   </div>
-
-  <?php include INCLUDES_PATH . '/loading.php' ?>
 
   <?php include INCLUDES_PATH . '/admin/table_kategori.php' ?>
 
@@ -47,7 +41,7 @@ include INCLUDES_PATH . "admin/layout/header.php";
     <div class="bg-white rounded-xl shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
       <h3 class="text-xl font-semibold text-gray-500">Tidak ada kategori</h3>
       <p class="text-sm text-gray-500 mb-4">Tambahkan kategori baru untuk mulai mengelompokan produk.</p>
-      <a :href=" baseUrl + '/admin/kategori/form?act=tambah'"
+      <a x-show="hasRole(['admin'])" :href=" baseUrl + '/admin/kategori/form?act=tambah'"
         class="btn btn-primary px-6 py-2.5 w-auto">Tambah Kategori</a>
     </div>
   </template>

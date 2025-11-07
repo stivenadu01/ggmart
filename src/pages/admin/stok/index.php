@@ -1,4 +1,5 @@
 <?php
+page_require(['admin', 'manager']);
 $pageTitle = "Kelola Stok";
 include INCLUDES_PATH . "/admin/layout/header.php";
 ?>
@@ -15,16 +16,12 @@ include INCLUDES_PATH . "/admin/layout/header.php";
     <div class="flex items-center gap-3">
       <button @click="showFilter = !showFilter"
         class="md:hidden btn btn-gray w-auto flex items-center gap-1 rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 14.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-2.586L3.293 6.707A1 1 0 013 6V4z" />
-        </svg>
-        Filter
+        <span class="w-5 h-5" x-html="icon('filter')">
+          Filter
       </button>
-      <a :href="baseUrl + '/admin/stok/form'"
-        class="btn btn-accent px-5 py-2.5 w-auto rounded-lg font-semibold">
-        <span class="me-1">+</span>
+      <a x-show="hasRole(['admin'])" :href="baseUrl + '/admin/stok/form'"
+        class="btn btn-accent w-auto">
+        <span class="me-1 w-5 h-5" x-html="icon('tambah')"></span>
         <span class="hidden sm:inline me-1">Tambah</span>Perubahan Stok
       </a>
     </div>
@@ -43,14 +40,9 @@ include INCLUDES_PATH . "/admin/layout/header.php";
           <div class="relative">
             <input type="text" id="filter_search" x-model="filter.search"
               placeholder="Cari Produk"
-              class="w-full form-input h-10 border border-gray-300 rounded-lg pl-10 pr-4 text-sm focus:border-gg-primary focus:ring-gg-primary">
+              class="pl-10 pr-4">
             <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer">
-              <svg class="w-4 h-4 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <span class="w-4 h-4 text-gray-400" x-html="icon('cari')">
             </button>
           </div>
         </form>
@@ -58,8 +50,7 @@ include INCLUDES_PATH . "/admin/layout/header.php";
 
       <div class="sm:col-span-1">
         <label for="filter_type" class="text-xs font-semibold text-gray-600 mb-1 block">Tipe</label>
-        <select id="filter_type" x-model="filter.type" @change="applyFilter()"
-          class="w-full form-select h-10 border border-gray-300 rounded-lg focus:border-gg-primary focus:ring-gg-primary text-sm">
+        <select id="filter_type" x-model="filter.type" @change="applyFilter()">
           <option value="">Semua</option>
           <option value="masuk">Stok Masuk</option>
           <option value="keluar">Stok Keluar</option>
@@ -72,19 +63,12 @@ include INCLUDES_PATH . "/admin/layout/header.php";
           @click="resetFilter"
           :disabled="!filter.search && filter.type === ''"
           class="btn btn-gray flex items-center justify-center gap-2 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M21 12a9 9 0 11-9-9v3m0-3l-3 3m3-3l3 3" />
-          </svg>
+          <span x-html="icon('refresh')" class="w-4 h-4 text-gray-400"></span>
           <span>Reset</span>
         </button>
       </div>
     </div>
   </div>
-
-  <!-- LOADING -->
-  <?php include INCLUDES_PATH . '/loading.php' ?>
 
   <!-- TABLE -->
   <?php include INCLUDES_PATH . '/admin/table_mutasi_stok.php' ?>
@@ -93,15 +77,11 @@ include INCLUDES_PATH . "/admin/layout/header.php";
   <template x-if="!loading && mutasiStok.length === 0">
     <div class="bg-white rounded-xl shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
       <div class="mx-auto w-24 h-24 flex items-center justify-center mb-4 text-gray-400">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5" stroke="currentColor" class="w-24 h-24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M3 7.5V6a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 6v1.5M3 7.5h18m-18 0v10.125A2.25 2.25 0 005.25 19.875h13.5A2.25 2.25 0 0021 17.625V7.5M8.25 10.5h7.5" />
-        </svg>
+        <span x-html="icon('stok')">
       </div>
       <h3 class="text-xl font-semibold text-gray-800">Belum ada perubahan stok</h3>
       <p class="text-sm text-gray-500 mb-4">Tambahkan perubahan stok untuk memulai pencatatan.</p>
-      <a :href="baseUrl + '/admin/stok/form'" class="btn btn-accent px-6 py-2.5 w-auto">
+      <a x-show="hasRole(['admin'])" :href="baseUrl + '/admin/stok/form'" class="btn btn-accent px-6 py-2.5 w-auto">
         + Tambah perubahan stok</span>
       </a>
     </div>

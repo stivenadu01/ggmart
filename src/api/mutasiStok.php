@@ -10,6 +10,7 @@ $status = 200;
 
 switch ($method) {
   case 'GET':
+    api_require(['admin', 'manager']);
     try {
       // Mode: dropdown
       if (isset($_GET['mode']) && $_GET['mode'] == 'dropdown' && isset($_GET['kode'])) {
@@ -53,6 +54,7 @@ switch ($method) {
 
   // POST /api/mutasiStok
   case 'POST':
+    api_require(['admin']);
     global $conn;
     $conn->begin_transaction();
     try {
@@ -77,7 +79,12 @@ switch ($method) {
         if (!$id_mutasi || !$mutasi) {
           throw new Exception('Mutasi/Batch Stok Tidak Ditemukan!', 422);
         }
+
         if (!ubahSisaStokMutasi($id_mutasi, $mutasi['sisa_stok'] - $jumlah)) throw new Exception("Gagal Ubah Stok", 500);
+
+
+        $input_data['total_pokok'] = $input_data['jumlah'] * $input_data['harga_pokok'];
+        $input_data['sisa_stok'] =  null;
         if (!tambahMutasiStok($input_data)) throw new Exception("Gagal Tambah", 500);
         if (!updateStokProduk($kode_produk)) throw new Exception("Gagal Update", 500);
       }
@@ -94,6 +101,7 @@ switch ($method) {
 
   // DELETE /api/mutasi?k=1
   case 'DELETE':
+    api_require(['admin']);
     global $conn;
     $conn->begin_transaction();
     try {

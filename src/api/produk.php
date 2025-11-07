@@ -61,6 +61,7 @@ switch ($method) {
     break;
 
   case 'POST':
+    api_require(['admin']);
     try {
       if (empty($input_data['nama_produk']) || empty($input_data['harga_jual']) || empty($input_data['id_kategori'])) {
         throw new Exception('Nama, Harga dan kategori wajib diisi.', 422);
@@ -72,6 +73,7 @@ switch ($method) {
       $input_data['kode_produk'] = $new_kode_produk;
       $input_data['stok'] = 0;
       $input_data['terjual'] = 0;
+      $input_data['is_lokal'] = isset($input_data['is_lokal']) ? (int)$input_data['is_lokal'] : 0;
 
       // Upload dan kompres gambar
       if (!empty($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
@@ -148,6 +150,7 @@ switch ($method) {
     break;
 
   case 'PUT':
+    api_require(['admin']);
     try {
       if (!$kode_produk) throw new Exception('Kode produk wajib diisi untuk update.', 400);
       if (empty($input_data['nama_produk']) || empty($input_data['harga_jual'])) {
@@ -238,15 +241,16 @@ switch ($method) {
     break;
 
   case 'DELETE':
+    api_require(['admin']);
     try {
       if (!$kode_produk) throw new Exception('Kode produk wajib diisi untuk delete.', 400);
 
       $produk_lama = findProduk($kode_produk);
+      if ($produk_lama['stok'] != 0) throw new Exception("Stok produk masih tersedia, Silahkan kurangi dulu", 400);
       if ($produk_lama && !empty($produk_lama['gambar'])) {
         $path = ROOT_PATH . '/public/uploads/' . $produk_lama['gambar'];
         if (file_exists($path)) unlink($path);
       }
-
       if (!hapusProduk($kode_produk)) {
         throw new Exception('Produk gagal dihapus atau tidak ditemukan.', 404);
       }

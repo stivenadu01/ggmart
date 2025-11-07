@@ -4,13 +4,27 @@
   const uploadsUrl = <?= json_encode(UPLOADS_URL) ?>;
 
   const currentUser = <?= json_encode($_SESSION['user'] ?? null) ?>;
-  const isKasir = <?= json_encode(is_kasir()) ?>;
-  const isManager = <?= json_encode(is_manager()) ?>;
-  const isSuperAdmin = <?= json_encode(is_super_admin()) ?>;
+
+  function hasRole(roles) {
+    if (!currentUser || !currentUser.role) return false;
+    if (!roles) return true;
+
+    // Normalisasi biar tidak masalah huruf besar/kecil atau spasi
+    const userRole = currentUser.role.toLowerCase().trim();
+    const roleList = (Array.isArray(roles) ? roles : [roles])
+      .map(r => r.toLowerCase().trim());
+    return roleList.includes(userRole);
+  }
+
+
 
   function formatRupiah(angka, prefix = true) {
-    angka = new Intl.NumberFormat('id-ID').format(angka);
-    return prefix ? 'Rp' + angka : angka;
+    const formatted = new Intl.NumberFormat('id-ID', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(angka);
+
+    return prefix ? 'Rp' + formatted : formatted;
   }
 
   function formatDate(dateStr) {

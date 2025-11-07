@@ -1,4 +1,5 @@
 <?php
+page_require(['admin', 'kasir']);
 $pageTitle = "Input Transaksi";
 include INCLUDES_PATH . "admin/layout/header.php";
 ?>
@@ -7,32 +8,44 @@ include INCLUDES_PATH . "admin/layout/header.php";
   <div class="flex  flex-col md:flex-row">
 
     <div class="w-full md:w-2/3 bg-white p-4 rounded-xl shadow-lg h-[85dvh] flex flex-col">
-      <div class="mb-4 bg-white pb-4 border-b border-gray-100">
-        <input id="searchProduk"
-          type="text"
-          placeholder="Cari Produk...  [ctrl+k]"
-          autofocus
-          x-model="search"
-          class="p-5 w-full md:p-6 text-2xl font-semibold tracking-wide input-trx
-       bg-white border-gray-950 shadow-none border placeholder-gray-400 text-gray-900 "
-          @input.debounce.200="fetchProduk()"
-          @keydown.enter.prevent="tambahProdukDariInput()">
+      <div class="mb-4 bg-white pb-4 border-b border-gray-100 relative">
+        <div class="relative">
+          <input
+            id="searchProduk"
+            type="text"
+            placeholder="Cari Produk..."
+            x-ref="searchInput"
+            autofocus
+            x-model="search"
+            class="p-5 md:p-6 w-full text-2xl font-semibold tracking-wide input-trx
+           bg-white border border-gray-300 rounded-xl shadow-sm
+           placeholder-gray-400 text-gray-900 pr-28 focus:ring-1 focus:ring-gg-primary focus:border-gg-primary focus:outline-none"
+            @input.debounce.200="fetchProduk()"
+            @keydown.enter.prevent="tambahProdukDariInput()">
+          <!-- Shortcut Key Label -->
+          <span
+            class="shortcut-key absolute right-5 top-1/2 -translate-y-1/2 text-sm pointer-events-none select-none">
+            Ctrl + K
+          </span>
+        </div>
       </div>
+
+
 
       <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
         <div x-show="produk.length === 0 && search != ''" class="text-center text-gray-500 py-10">
           <p>Tidak ada produk ditemukan.</p>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           <template x-for="p in produk" :key="p.kode_produk">
             <div
-              class="relative bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-emerald-300 transition-all duration-300 cursor-pointer overflow-hidden group"
+              class="relative bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-emerald-300 transition-all duration-200 cursor-pointer overflow-hidden group"
               :class="p.stok == 0 ? 'opacity-50 cursor-not-allowed' : ''"
               @click="p.stok > 0 && tambahKeranjang(p)">
 
               <div class="relative">
                 <img :src="p.gambar ? `${uploadsUrl}/${p.gambar}` : `${assetsUrl}/img/no-image.webp`"
-                  class="w-full h-28 object-cover transition duration-500 group-hover:scale-105">
+                  class="w-full h-28 object-cover transition duration-200 group-hover:scale-105">
 
                 <span
                   class="absolute top-1 right-1 text-xs font-bold px-1.5 py-1 rounded-md shadow-lg transition-all duration-200"
@@ -60,16 +73,14 @@ include INCLUDES_PATH . "admin/layout/header.php";
         <button @click="resetKeranjang()"
           class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-md transition flex items-center justify-center text-sm"
           title="Reset Keranjang">
-          <span class="mr-1 text-sm">Reset</span>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.24 20.16 10.53 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9z" />
-          </svg>
+          <span class="mr-1 text-sm">Reset </span>
+          <span class="w-4 h-4 fill-current" x-html="icon('refresh')"></span>
         </button>
       </div>
 
       <div class="flex flex-1 flex-col space-y-3 p-4 overflow-y-auto max-h-[43dvh]">
         <template x-for="(item, index) in keranjang" :key="item.kode_produk">
-          <div class="flex justify-between items-center border-b border-gray-200 pb-3 hover:bg-gray-50 -mx-4 px-4 transition duration-150">
+          <div class="flex justify-between items-center border-b border-gray-200 pb-3 hover:bg-gray-50 -mx-4 px-4 transition duration-200">
             <div class="flex-1 pr-2">
               <h3 class="font-semibold text-gray-800 text-sm truncate" x-text="item.nama_produk"></h3>
               <p class="text-xs text-gray-500" x-text="formatRupiah(item.harga_satuan)"></p>
@@ -77,13 +88,13 @@ include INCLUDES_PATH . "admin/layout/header.php";
 
             <div class="flex items-center gap-2">
               <input type="number" min="1"
-                class="!w-14 text-sm py-1 px-1 border-gray-300 rounded-md focus:border-emerald-500 focus:ring-emerald-500 text-center"
+                class="!w-14 py-1 px-1"
                 x-model.number="item.jumlah" @input.debounce.200="updateSubtotal(index)">
 
               <p class="text-sm font-bold text-gray-900 text-right" x-text="formatRupiah(item.subtotal)"></p>
 
               <button @click="hapusKeranjang(index)" class="text-red-500 hover:text-red-700 p-1 rounded-full transition">
-                ❌
+                <span class="w-4 h-4" x-html="icon('x')"></span>
               </button>
             </div>
           </div>
@@ -111,22 +122,19 @@ include INCLUDES_PATH . "admin/layout/header.php";
             <label for="bayar-tunai" class="flex-1 cursor-pointer">
               <input type="radio" id="bayar-tunai" name="metode" value="tunai" x-model="metodeBayar" class="sr-only peer">
               <div class="w-full text-center p-1.5 rounded-lg border-2 border-gray-300 text-gray-700 
-                peer-checked:bg-emerald-500 peer-checked:border-emerald-600 peer-checked:text-white 
+                peer-checked:bg-emerald-500 peer-checked:border-emerald-600 
+                peer-checked:text-white
                 transition duration-200 hover:bg-gray-100 font-medium shadow-sm flex items-center justify-center text-sm">
-
-                <svg class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-                </svg>
-                TUNAI
+                <span class="w-4 h-4 fill-current" x-html="icon('tunai')"></span>
+                <span>TUNAI <span class="shortcut-key">F2</span></span>
               </div>
             </label>
             <label for="bayar-qris" class="flex-1 cursor-pointer">
               <input type="radio" id="bayar-qris" name="metode" value="qris" x-model="metodeBayar" class="sr-only peer">
-              <div class="w-full text-center p-1.5 rounded-lg border-2 border-gray-300 text-gray-700 peer-checked:bg-emerald-500 peer-checked:border-emerald-600 peer-checked:text-white transition duration-200 hover:bg-gray-100 font-medium shadow-sm flex items-center justify-center text-sm">
-                <svg class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm2 2h4v4h-4V5zM15 15h2v2h-2v-2zM15 11h2v2h-2v-2zM15 19h2v2h-2v-2zM19 15h2v2h-2v-2zM19 11h2v2h-2v-2zM19 19h2v2h-2v-2z" />
-                </svg>
-                QRIS
+              <div class="w-full text-center p-1.5 rounded-lg border-2 border-gray-300 
+                peer-checked:text-white text-gray-700 peer-checked:bg-emerald-500 peer-checked:border-emerald-600 transition duration-200 hover:bg-gray-100 font-medium shadow-sm flex items-center justify-center text-sm">
+                <span x-html="icon('qris')" class="fill-current w-4 h-4"></span>
+                <span>QRIS <span class="shortcut-key">F3</span></span>
               </div>
             </label>
           </div>
@@ -143,18 +151,15 @@ include INCLUDES_PATH . "admin/layout/header.php";
               <button @click="simpanTransaksi(true)"
                 :disabled="keranjang.length === 0"
                 class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold py-2.5 rounded-xl shadow-lg transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center text-base uppercase tracking-wider">
-                <svg class="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6V3h12v6z" />
-                </svg>
-                <span>BAYAR & CETAK STRUK</span>
+                <span class="w-5 h-5 mr-2 fill-current" x-html="icon('cetak')" />
+                </span>
+                <span>SIMPAN & CETAK STRUK <span class="shortcut-key">Ctrl + Enter</span></span>
               </button>
               <button @click="simpanTransaksi(false)"
                 :disabled="keranjang.length === 0"
                 class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-1.5 rounded-xl shadow-md transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center text-sm">
-                <svg class="w-4 h-4 mr-2 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
-                </svg>
-                <span>Simpan Tanpa Cetak</span>
+                <span class="fill-current w-4 h-4" x-html="icon('save')"></span>
+                <span>Simpan Tanpa Cetak <span class="shortcut-key">Ctrl + S</span></span>
               </button>
             </div>
           </template>

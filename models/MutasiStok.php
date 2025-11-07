@@ -32,7 +32,7 @@ function getMutasiStokList($page = 1, $limit = 10, $type = '', $search = '')
   $total = $conn->query("SELECT COUNT(*) AS total FROM mutasi_stok ms $whereClause")->fetch_assoc()['total'];
 
   $sql = "
-    SELECT ms.*, p.satuan_dasar
+    SELECT ms.*, p.satuan_dasar, p.nama_produk as nama_dari_produk
     FROM mutasi_stok ms
     LEFT JOIN produk p ON ms.kode_produk = p.kode_produk
     $whereClause

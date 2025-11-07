@@ -1,4 +1,5 @@
 <?php
+
 // 1. Load Composer Autoload
 use Dotenv\Dotenv;
 

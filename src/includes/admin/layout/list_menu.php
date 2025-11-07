@@ -1,92 +1,99 @@
 <nav class="flex-1 p-2 space-y-2 list-menu">
 
-  <a :href="baseUrl + '/admin/dashboard'"
-    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/dashboard') ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'" title="Dashboard">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Dashboard</span>
+  <a x-show="hasRole(['admin','manager'])" :href="baseUrl + '/admin/dashboard'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/dashboard') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Dashboard">
+    <span class="w-5 h-5" x-html="icon('dashboard')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Dashboard</span>
   </a>
 
-  <a :href="baseUrl + '/admin/kategori'"
-    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/kategori') ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'" title="Kelola Kategori">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Kelola Kategori</span>
+  <a x-show="hasRole(['admin','manager'])" :href="baseUrl + '/admin/kategori'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/kategori') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Kelola Kategori">
+    <span class="h-5 w-5" x-html="icon('kategori')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Kelola Kategori</span>
   </a>
 
-  <a :href="baseUrl + '/admin/produk'"
+  <a x-show="hasRole(['admin','manager'])" :href="baseUrl + '/admin/produk'"
     class="btn btn-primary shadow-none gap-2 justify-start"
-    :class="location.pathname.includes('/admin/produk') ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'"
+    :class="location.pathname.includes('/admin/produk') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'"
     title="Kelola Produk">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Kelola Produk</span>
+    <span class="h-5 w-5" x-html="icon('produk')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Kelola Produk</span>
   </a>
 
-  <a :href="baseUrl + '/admin/stok'"
+  <a x-show="hasRole(['admin','manager'])" :href="baseUrl + '/admin/stok'"
     class="btn btn-primary shadow-none gap-2 justify-start cursor-pointer"
-    :class="location.pathname.includes('/admin/stok') ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'"
+    :class="location.pathname.includes('/admin/stok') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'"
     title="Kelola Stok">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M4 19h16M8 17V9m4 8V5m4 12v-3" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Kelola Stok</span>
+    <span class="h-5 w-5" x-html="icon('stok')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Kelola Stok</span>
   </a>
 
-  <a :href="baseUrl + '/admin/transaksi/input'"
-    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/transaksi/input') ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'" title="Input Transaksi">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Input Transaksi</span>
+  <a x-show="hasRole(['admin', 'kasir'])" :href="baseUrl + '/admin/transaksi/input'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/transaksi/input') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Input Transaksi">
+    <span class="h-5 w-5" x-html="icon('input')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Input Transaksi</span>
   </a>
 
-  <a :href="baseUrl + '/admin/transaksi/riwayat'"
-    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/transaksi/riwayat') ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'" title="Riwayat Transaksi">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m-6 4h6m-7-18H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2.5m-1.5-2V2" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Riwayat Transaksi</span>
+  <a x-show="hasRole(['admin','manager'])" :href="baseUrl + '/admin/transaksi/riwayat'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/transaksi/riwayat') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Riwayat Transaksi">
+    <span class="h-5 w-5" x-html="icon('riwayat')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Riwayat Transaksi</span>
   </a>
 
-  <a :href="baseUrl + '/admin/laporan'"
-    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname == '/admin/laporan' ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'" title="Laporan">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m0 6v-2m0 2v-2m0 2h6m0-6h6m-6 0v2m0 0v2m0-4h-6M18 10V6M6 14v4M18 18h2a2 2 0 002-2V4a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2h2m0 0v-4m0 4h16m-8-2v2" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Laporan</span>
+  <a x-show="hasRole(['admin','manager'])" :href="baseUrl + '/admin/laporan'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname == '/admin/laporan' ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Laporan">
+    <span class="h-5 w-5" x-html="icon('laporan')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Laporan</span>
   </a>
 
-  <a :href="baseUrl + '/admin/pengaturan'"
-    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/pengaturan') ? 'bg-gg-primary/90 text-white' : 'bg-transparent text-neutral-900'" title="Pengaturan">
-    <span>
-      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.29.608 3.284 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    </span>
-    <span x-show="!sidebarCollapse">Pengaturan</span>
+  <a x-show="hasRole(['admin'])" :href="baseUrl + '/admin/user'"
+    class="btn btn-primary shadow-none gap-2 justify-start"
+    :class="location.pathname.includes('/admin/user') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'"
+    title="Kelola User">
+    <span class="h-5 w-5" x-html="icon('kelolauser')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Kelola User</span>
+  </a>
+
+  <a x-show="hasRole(['admin'])" :href="baseUrl + '/admin/pengaturan'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/pengaturan') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Pengaturan">
+    <span class="h-5 w-5" x-html="icon('pengaturan')"></span>
+    <span
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Pengaturan</span>
   </a>
 
 </nav>

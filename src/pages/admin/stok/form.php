@@ -1,4 +1,5 @@
 <?php
+page_require(['admin']);
 $pageTitle = "Tambah Stok";
 include INCLUDES_PATH . "/admin/layout/header.php";
 ?>
@@ -41,8 +42,6 @@ include INCLUDES_PATH . "/admin/layout/header.php";
               x-model="produkList.query"
               @focus="produkList.open = true"
               @input.debounce.500ms="produkList.fetch()"
-              class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm 
-              focus:border-gg-primary focus:ring-gg-primary"
               placeholder="Ketik nama atau kode produk..." />
 
             <!-- Dropdown -->
@@ -90,8 +89,7 @@ include INCLUDES_PATH . "/admin/layout/header.php";
           <!-- Jumlah -->
           <div>
             <label class=" block mb-1 font-medium capitalize">Jumlah <span x-text="form.type"></span> (<span x-text="produkList.satuan_dasar"></span>)</label>
-            <input type="number" x-model="form.jumlah" min="1" required
-              class="w-full rounded-lg focus:ring-gg-primary focus:border-gg-primary p-2.5">
+            <input type="number" @input="syncHargaPokok('jumlah')" x-model="form.jumlah" min="1" required>
             <p class="text-xs text-gray-500">Jumlah stok <span x-text="form.type"></span> dalam <span x-text="produkList.satuan_dasar"></span>.</p>
           </div>
 
@@ -100,14 +98,13 @@ include INCLUDES_PATH . "/admin/layout/header.php";
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
                 <label class="block mb-1 font-medium">Harga Pokok/Beli</label>
-                <input step="0.00000000000001" type="number" x-model="form.harga_pokok" @input="syncHargaPokok('harga')"
+                <input step="0.00000000000001" type="number" x-model="form.harga_pokok" @input="syncHargaPokok('harga')" required
                   class="w-full rounded-lg focus:ring-gg-primary focus:border-gg-primary p-2.5">
                 <span class="text-xs text-gray-400">Harga beli satuan</span>
               </div>
               <div>
                 <label class="block mb-1 font-medium">Total Pokok</label>
-                <input step="0.000000000000001" type="number" x-model="form.total_pokok" @input="syncHargaPokok('total')"
-                  class="w-full rounded-lg focus:ring-gg-primary focus:border-gg-primary p-2.5">
+                <input step="0.000000000000001" type="number" x-model="form.total_pokok" @input="syncHargaPokok('total')" required>
                 <span class="text-xs text-gray-400">Total harga pembelian (harga pokok x jumlah)</span>
               </div>
             </div>
@@ -147,14 +144,13 @@ include INCLUDES_PATH . "/admin/layout/header.php";
           <!-- Keterangan -->
           <div>
             <label class="block mb-1 font-medium">Keterangan (Opsional)</label>
-            <textarea x-model="form.keterangan" rows="3"
-              class="w-full border-gray-300 rounded-lg focus:ring-gg-primary focus:border-gg-primary p-2.5"></textarea>
+            <textarea x-model="form.keterangan" rows="3"></textarea>
           </div>
 
           <!-- Tombol -->
           <div class="flex justify-end pt-4 gap-2 border-t border-gray-200">
             <button type="button" @click="page = 1" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-4">Kembali</button>
-            <?php include INCLUDES_PATH . '/btn_submit.php' ?>
+            <?php include INCLUDES_PATH . '/btn_simpan.php' ?>
           </div>
         </div>
       </template>

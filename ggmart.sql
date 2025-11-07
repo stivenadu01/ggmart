@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS user (
     nama VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('super_admin', 'kasir', 'manager', 'user') DEFAULT 'user',
+    role ENUM('admin', 'kasir', 'manager', 'user') DEFAULT 'user',
     tanggal_dibuat DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS produk (
     deskripsi TEXT,
     harga_jual DECIMAL(12, 2) NOT NULL,
     satuan_dasar CHAR(10),
+    is_lokal TINYINT(1) DEFAULT 0,
     stok INT DEFAULT 0,
     terjual INT DEFAULT 0,
     gambar VARCHAR(255),
@@ -93,4 +94,11 @@ CREATE TABLE IF NOT EXISTS detail_transaksi (
         REFERENCES produk(kode_produk)
         ON DELETE SET NULL
         ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS setting (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,  
+    value TEXT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

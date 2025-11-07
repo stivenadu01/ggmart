@@ -1,44 +1,31 @@
 <?php
 
-function is_super_admin()
+function has_role($roles = [])
 {
-  return isset($_SESSION['user']) && $_SESSION['user']['role'] === 'super_admin' ? true : false;
-}
-function is_kasir()
-{
-  return isset($_SESSION['user']) && $_SESSION['user']['role'] === 'kasir' ? true : false;
-}
-function is_manager()
-{
-  return isset($_SESSION['user']) && $_SESSION['user']['role'] === 'manager' ? true : false;
+  if (!isset($_SESSION['user']['role'])) {
+    return false;
+  }
+  $userRole = $_SESSION['user']['role'];
+  return in_array($userRole, $roles);
 }
 
-function api_require_kasir()
+function api_require($roles = [])
 {
-  if (!is_super_admin() && !is_kasir()) {
+  if (!has_role($roles)) {
     respond_json(['success' => false, 'message' => 'Akses ditolak'], 403);
     exit;
   }
 }
 
-function page_require_kasir()
+function page_require($roles = [])
 {
-  if (!is_super_admin() && !is_kasir()) {
-    redirect_back('/auth/login');
-  }
-}
-
-function api_require_manager()
-{
-  if (!is_super_admin() && !is_manager()) {
-    respond_json(['success' => false, 'message' => 'Akses ditolak'], 403);
+  if (!isset($_SESSION['user'])) {
+    redirect('/auth/login');
     exit;
   }
-}
 
-function page_require_manager()
-{
-  if (!is_super_admin() && !is_manager()) {
-    redirect_back('/auth/login');
+  if (!has_role($roles)) {
+    redirect_back('/auth/login'); // atau bisa ke halaman "403 Forbidden"
+    exit;
   }
 }

@@ -64,7 +64,7 @@ function kelolaKategoriPage() {
         showFlash('Kategori berhasil dihapus');
         this.fetchKategori();
       } else {
-        showFlash('Gagal menghapus kategori: ' + data.message);
+        showFlash('Gagal menghapus kategori: ' + data.message, 'error');
       }
     }
   }

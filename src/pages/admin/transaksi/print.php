@@ -1,4 +1,5 @@
 <?php
+page_require(['admin', 'kasir', 'manager']);
 models('Transaksi');
 models('DetailTransaksi');
 models('Produk');

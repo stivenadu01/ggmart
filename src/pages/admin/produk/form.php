@@ -1,4 +1,5 @@
 <?php
+page_require(['admin']);
 $act = $_GET['act'] ?? 'tambah';
 $id  = $_GET['id'] ?? null;
 $pageTitle = ($act === 'edit') ? "Edit Produk" : "Tambah Produk";
@@ -58,22 +59,64 @@ include INCLUDES_PATH . "/admin/layout/header.php";
       <template x-if="page === 2">
         <div class="space-y-4 animate-fade">
           <h2 class="text-lg font-semibold text-gray-700">2️⃣ Detail Produk</h2>
-          <div>
-            <label for="satuan_dasar">Satuan Dasar</label>
-            <input type="text" x-model="form.satuan_dasar" id="satuan_dasar" class="" placeholder="Contoh: Pcs, Kg, Botol, Buah dll ">
+          <div class="flex w-full gap-4 flex-col md:flex-row">
+            <div class="md:w-1/2">
+              <label for="satuan_dasar">Satuan Dasar</label>
+              <input type="text" x-model="form.satuan_dasar" id="satuan_dasar" placeholder="Contoh: Pcs, Kg, Botol, Buah dll ">
+            </div>
+            <div class="md:w-1/2">
+              <label class="block font-semibold text-gray-700 mb-1">Produk Lokal</label>
+              <div class="flex space-x-2">
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="is_lokal" value="1" x-model="form.is_lokal" class="sr-only peer">
+                  <div
+                    class="w-full text-center p-2 rounded-lg border-2 border-gray-300 text-gray-700
+                    peer-checked:bg-gg-primary peer-checked:border-gg-primary peer-checked:text-white
+                    transition duration-200 hover:bg-gray-100 font-medium shadow-sm flex items-center justify-center text-sm">
+                    YA
+                  </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="is_lokal" value="0" x-model="form.is_lokal" class="sr-only peer">
+                  <div
+                    class="w-full text-center p-2 rounded-lg border-2 border-gray-300 text-gray-700 
+               peer-checked:bg-gg-primary peer-checked:border-gg-primary peer-checked:text-white
+               transition duration-200 hover:bg-gray-100 font-medium shadow-sm flex items-center justify-center text-sm">
+                    TIDAK
+                  </div>
+                </label>
+              </div>
+            </div>
           </div>
-
           <div>
             <label class="block mb-1 font-medium">Deskripsi</label>
             <textarea x-model="form.deskripsi" rows="4"
-              class="w-full rounded-lg border-gray-300 focus:ring-gg-primary focus:border-gg-primary p-2.5"
               placeholder="Tuliskan deskripsi produk (opsional)"></textarea>
           </div>
 
           <div>
             <label class="block mb-1 font-medium">Gambar Produk</label>
-            <input type="file" @change="onFileChange" accept="image/*"
-              class="w-full border-gray-300 rounded-lg p-2.5">
+            <div class="flex items-center gap-3">
+              <!-- Tombol custom -->
+              <label
+                for="fileInput"
+                class="cursor-pointer bg-blue-600 hover:bg-blue-600/80 text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 transition">
+                <span class="w-5 h-5" x-html="icon('gambar')"></span>
+                <span x-text="isEdit ? 'Ganti Gambar' : 'Pilih Gambar'"></span>
+              </label>
+
+              <!-- Input file disembunyikan -->
+              <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                @change="onFileChange"
+                class="hidden">
+
+              <!-- Nama file (preview) -->
+              <span x-text="fileName" class="text-gray-600 text-sm truncate"></span>
+            </div>
+
             <template x-if="preview">
               <img :src="preview" alt="Preview Gambar" class="mt-3 w-40 h-40 object-cover rounded-lg shadow">
             </template>
@@ -82,7 +125,7 @@ include INCLUDES_PATH . "/admin/layout/header.php";
 
           <div class="flex justify-end gap-4 pt-4 border-t border-gray-200 w-auto">
             <button type="button" @click="page = 1" class="btn btn-gray">Kembali</button>
-            <?php include INCLUDES_PATH . 'btn_submit.php' ?>
+            <?php include INCLUDES_PATH . 'btn_simpan.php' ?>
           </div>
         </div>
       </template>

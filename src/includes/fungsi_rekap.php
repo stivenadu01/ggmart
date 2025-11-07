@@ -1,109 +1,152 @@
 <?php
 
-// === FUNGSI REKAP TAMBAHAN ===========================
-function getRekapPerHari($start, $end, $metode = null)
+
+// ============================================
+// Fungsi untuk transaksi
+function getRekapTransaksiHarian($tanggal, $metode = '')
 {
   global $conn;
+  $tanggal = $conn->escape_string($tanggal);
+  $metode = $conn->escape_string($metode);
+  $query = "
+        SELECT 
+        kode_transaksi,
+        tanggal_transaksi,
+        metode_bayar
+        FROM transaksi
+        WHERE DATE(tanggal_transaksi) = DATE(?)
+    ";
+
+  if (!empty($metode)) {
+    $query .= " AND metode_bayar = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $tanggal, $metode);
+  } else {
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $tanggal);
+  }
+
+  $stmt->execute();
+  $res = $stmt->get_result();
   $data = [];
-  $tanggal_list = getTanggalRange($start, $end);
-
-  foreach ($tanggal_list as $tgl) {
-    $filter_metode = $metode ? "AND metode_bayar = '$metode'" : "";
-
-    // Total pokok dan jual per tanggal
-    $trx_tgl = $conn->query("
-      SELECT
-      COUNT(*) as total_transaksi,
-      SUM(total_pokok) as pokok,
-      SUM(total_harga) as jual
-      FROM transaksi
-      WHERE DATE(tanggal_transaksi) = '$tgl' $filter_metode
-    ")->fetch_assoc();
-
-    // Total produk terjual per tanggal
-    $trx_jumlah = $conn->query("
-      SELECT
-      SUM(dt.jumlah) as total_produk
-      FROM transaksi t
-      LEFT JOIN detail_transaksi dt
-      ON t.kode_transaksi = dt.kode_transaksi
-      WHERE DATE(t.tanggal_transaksi) = '$tgl' $filter_metode
-    ")->fetch_assoc();
-
-    $pokok = (float)($trx_tgl['pokok'] ?? 0);
-    $jual = (float)($trx_tgl['jual'] ?? 0);
-    $laba = $jual - $pokok;
-
-    $data[] = [
-      'tanggal' => $tgl,
-      'transaksi' => (int)($trx_tgl['total_transaksi'] ?? 0),
-      'produk' => (int)($trx_jumlah['total_produk'] ?? 0),
-      'pokok' => $pokok,
-      'jual' => $jual,
-      'laba' => $laba
-    ];
+  while ($r = $res->fetch_assoc()) {
+    $data[] = $r;
   }
   return $data;
 }
 
-function getRekapPerBulan($tahun, $metode = null)
+function getRekapTransaksiBulanan($bulan, $metode = '')
 {
   global $conn;
+  $bulan = $conn->escape_string($bulan);
+  $metode = $conn->escape_string($metode);
+  $q = "
+        SELECT 
+            DATE(t.tanggal_transaksi) AS tanggal,
+            COUNT(DISTINCT t.kode_transaksi) AS jumlah_transaksi,
+            SUM(d.jumlah) AS total_produk,
+            SUM(d.subtotal_pokok) AS total_pokok,
+            SUM(d.subtotal) AS total_jual,
+            SUM(d.subtotal - d.subtotal_pokok) AS total_laba
+        FROM transaksi t
+        JOIN detail_transaksi d ON t.kode_transaksi = d.kode_transaksi
+        WHERE DATE_FORMAT(t.tanggal_transaksi, '%Y-%m') = '$bulan'
+    ";
+
+  if (!empty($metode)) {
+    $q .= " AND t.metode_bayar = '$metode'";
+  }
+  $q .= " GROUP BY DATE(t.tanggal_transaksi)";
+  $res = $conn->query($q);
   $data = [];
+  while ($r = $res->fetch_assoc()) {
+    $data[] = $r;
+  }
+  return $data;
+}
 
-  for ($i = 1; $i <= 12; $i++) {
-    $start = "$tahun-" . str_pad($i, 2, '0', STR_PAD_LEFT) . "-01";
-    $end = date('Y-m-t', strtotime($start));
+function getRekapTransaksiTahunan($tahun, $metode = '')
+{
+  global $conn;
+  $tahun = $conn->escape_string($tahun);
+  $metode = $conn->escape_string($metode);
 
-    $filter_metode = $metode ? "AND metode_bayar = '$metode'" : "";
+  $q = "
+        SELECT 
+            DATE_FORMAT(t.tanggal_transaksi, '%M') AS bulan,
+            COUNT(DISTINCT t.kode_transaksi) AS jumlah_transaksi,
+            SUM(d.jumlah) AS total_produk,
+            SUM(d.subtotal_pokok) AS total_pokok,
+            SUM(d.subtotal) AS total_jual,
+            SUM(d.subtotal - d.subtotal_pokok) AS total_laba
+        FROM transaksi t
+        JOIN detail_transaksi d ON t.kode_transaksi = d.kode_transaksi
+        WHERE YEAR(t.tanggal_transaksi) = '$tahun'
+    ";
 
-    $trx_bulan = $conn->query("
-      SELECT
-      COUNT(*) as total_transaksi,
-      SUM(total_pokok) as pokok,
-      SUM(total_harga) as jual
-      FROM transaksi
-      WHERE DATE(tanggal_transaksi) BETWEEN '$start' AND '$end'
-      $filter_metode
-    ")->fetch_assoc();
+  if (!empty($metode)) {
+    $q .= " AND t.metode_bayar = '$metode'";
+  }
 
-    // Total produk terjual per tanggal
-    $trx_jumlah = $conn->query("
-      SELECT
-      SUM(dt.jumlah) as total_produk
-      FROM transaksi t
-      LEFT JOIN detail_transaksi dt
-      ON t.kode_transaksi = dt.kode_transaksi
-      WHERE DATE(t.tanggal_transaksi) BETWEEN '$start' AND '$end'
-      $filter_metode
-    ")->fetch_assoc();
-    $pokok = (float)($trx_bulan['pokok'] ?? 0);
-    $jual = (float)($trx_bulan['jual'] ?? 0);
-    $laba = $jual - $pokok;
+  $q .= " GROUP BY bulan";
 
-    $data[] = [
-      'bulan' => date('F', mktime(0, 0, 0, $i, 10)),
-      'transaksi' => (int)($trx_bulan['total_transaksi'] ?? 0),
-      'produk' => (int)($trx_jumlah['total_produk'] ?? 0),
-      'pokok' => $pokok,
-      'jual' => $jual,
-      'laba' => $laba
-    ];
+  $res = $conn->query($q);
+  $data = [];
+  while ($r = $res->fetch_assoc()) {
+    $data[] = $r;
   }
 
   return $data;
 }
 
 
-
-function getTanggalRange($start, $end)
+function findDetailTransaksi($kode_transaksi)
 {
-  $dates = [];
-  $current = strtotime($start);
-  $last = strtotime($end);
-  while ($current <= $last) {
-    $dates[] = date('Y-m-d', $current);
-    $current = strtotime("+1 day", $current);
+  global $conn;
+  $kode_transaksi = $conn->escape_string($kode_transaksi);
+  $res = $conn->query("
+    SELECT dt.*, p.nama_produk
+    FROM detail_transaksi dt 
+    LEFT JOIN produk p ON p.kode_produk = dt.kode_produk  
+    WHERE dt.kode_transaksi = '$kode_transaksi'
+  ");
+
+
+  $data = [];
+  while ($r = $res->fetch_assoc()) {
+    $data[] = $r;
   }
-  return $dates;
+  return $data;
+}
+
+// ============================================
+// Fungsi untuk mutasi stok
+function getLaporanStokProduk($kode_produk = '', $tglMulai = '', $tglSelesai = '')
+{
+  global $conn;
+  $where = [];
+  if ($kode_produk) $where[] = "m.kode_produk = '" . $conn->escape_string($kode_produk) . "'";
+  if ($tglMulai) $where[] = "DATE(m.tanggal) >= '" . $conn->escape_string($tglMulai) . "'";
+  if ($tglSelesai) $where[] = "DATE(m.tanggal) <= '" . $conn->escape_string($tglSelesai) . "'";
+
+  $whereSql = $where ? "WHERE " . implode(' AND ', $where) : '';
+
+  $q = "
+        SELECT m.*, p.satuan_dasar
+        FROM mutasi_stok m JOIN produk p ON p.kode_produk = m.kode_produk
+        $whereSql
+        ORDER BY m.tanggal ASC
+    ";
+
+  $res = $conn->query($q);
+  $data = [];
+  while ($r = $res->fetch_assoc()) {
+    $data[] = $r;
+  }
+  return $data;
+}
+
+function nf($number)
+{
+  return number_format($number, 0, ',', '.');
 }

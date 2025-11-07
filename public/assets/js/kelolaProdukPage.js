@@ -34,7 +34,6 @@ function kelolaProdukPage() {
 
         if (data.success) {
           this.produk = data.data;
-          console.log(this.produk);
           this.pagination = data.pagination;
         } else {
           showFlash('Gagal memuat data produk', 'error');
