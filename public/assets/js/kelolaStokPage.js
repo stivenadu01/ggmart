@@ -41,6 +41,7 @@ const kelolaStokPage = () => ({
     }
   },
 
+
   applyFilter() {
     this.showFilter = false;
     this.fetchMutasiStok(1);

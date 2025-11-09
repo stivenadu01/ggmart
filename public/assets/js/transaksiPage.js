@@ -6,8 +6,11 @@ function transaksiPage() {
     totalHarga: 0,
     metodeBayar: 'tunai',
     submitting: false,
+    openRincian: false,
 
     init() {
+      this.fetchProduk();
+
       // === Fokus ke input pencarian pakai Ctrl+K ===
       window.addEventListener('keydown', (e) => {
         // Fokus pencarian
@@ -52,13 +55,10 @@ function transaksiPage() {
           this.hapusKeranjang();
           return;
         }
-
       });
     },
 
-
     async fetchProduk() {
-      if (!this.search.trim()) return;
       const res = await fetch(`${baseUrl}/api/produk?mode=trx&search=${encodeURIComponent(this.search)}`);
       const data = await res.json();
       if (data.success) this.produk = data.data;
@@ -97,7 +97,6 @@ function transaksiPage() {
           stok: p.stok // simpan stok di keranjang
         });
       }
-      this.produk = [];
       this.search = '';
       this.hitungTotal();
       this.$refs.searchInput.focus();

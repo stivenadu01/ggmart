@@ -48,8 +48,16 @@
   </div>
 
   <!-- PAGINATION -->
-  <div x-show="!loading" class="flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-100 gap-3 bg-gray-50">
-    <p class="text-sm text-gray-500" x-text="`Menampilkan ${kategori.length} dari ${pagination.total} kategori`"></p>
+  <div x-show="!loading" class="flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-100 gap-4 bg-gray-50">
+    <p class="text-sm text-gray-500">
+      <span x-text="'Menampilkan '"></span>
+      <select class="inline-block w-20" name="limit" @change="fetchKategori()" x-model="pagination.limit" id="limit">
+        <option value="10">10</option>
+        <option value="20">25</option>
+        <option value="50">50</option>
+      </select>
+      <span x-text="` dari ${pagination.total} kategori`"></span>
+    </p>
     <div class="flex flex-wrap gap-2">
       <button @click="prevPage" :disabled="pagination.page === 1"
         class="px-3 py-1 border rounded-md disabled:opacity-40 hover:bg-gray-100">‹</button>

@@ -1,7 +1,7 @@
 {
-  "name": "GG-MART",
-  "short_name": "GG-MART",
-  "start_url": "/admin/transaksi/input",
+  "name": "GG MART",
+  "short_name": "GG MART",
+  "start_url": "/ggmart/admin/dashboard",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2E7D32",

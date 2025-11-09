@@ -1,6 +1,9 @@
 </main>
 
-<?php include INCLUDES_PATH . "/user/layout/bottom_nav.php"; ?>
+
+
+
+<!-- <?php include INCLUDES_PATH . "/user/layout/footer_ggmart.php"; ?> -->
 <?php include INCLUDES_PATH . "/flash.php"; ?>
 <?php include INCLUDES_PATH . "/app.js.php"; ?>
 <?php include INCLUDES_PATH . "/icons.php"; ?>

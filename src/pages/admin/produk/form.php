@@ -96,32 +96,40 @@ include INCLUDES_PATH . "/admin/layout/header.php";
 
           <div>
             <label class="block mb-1 font-medium">Gambar Produk</label>
-            <div class="flex items-center gap-3">
-              <!-- Tombol custom -->
-              <label
-                for="fileInput"
-                class="cursor-pointer bg-blue-600 hover:bg-blue-600/80 text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 transition">
-                <span class="w-5 h-5" x-html="icon('gambar')"></span>
-                <span x-text="isEdit ? 'Ganti Gambar' : 'Pilih Gambar'"></span>
-              </label>
 
-              <!-- Input file disembunyikan -->
+            <!-- Drop Zone -->
+            <div
+              x-ref="dropZone"
+              @dragover.prevent="dragOver = true"
+              @dragleave.prevent="dragOver = false"
+              @drop.prevent="handleDrop($event)"
+              :class="dragOver ? 'border-gg-primary bg-gg-primary/5' : 'border-gray-300 bg-gray-50'"
+              class="border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer hover:border-gg-primary hover:bg-gray-100 relative">
               <input
+                x-ref="fileInput"
                 id="fileInput"
                 type="file"
                 accept="image/*"
                 @change="onFileChange"
                 class="hidden">
 
-              <!-- Nama file (preview) -->
-              <span x-text="fileName" class="text-gray-600 text-sm truncate"></span>
+
+              <div @click="$refs.fileInput.click()" class="flex flex-col items-center space-y-2">
+                <span class="w-10 h-10 opacity-80" x-html="icon('gambar')"></span>
+                <span class="font-medium text-gray-600" x-text="fileName || 'Seret & lepas gambar di sini atau klik untuk pilih'"></span>
+                <span class="text-xs text-gray-400">Format: JPG, PNG, WEBP — maksimal 5MB</span>
+              </div>
+
+              <!-- Preview -->
+              <template x-if="preview">
+                <img :src="preview" alt="Preview Gambar"
+                  class="mt-3 w-40 h-40 object-cover rounded-lg shadow-lg mx-auto">
+              </template>
             </div>
 
-            <template x-if="preview">
-              <img :src="preview" alt="Preview Gambar" class="mt-3 w-40 h-40 object-cover rounded-lg shadow">
-            </template>
             <span class="text-red-500/90 text-xs">* Pastikan gambar telah dikompres agar menghemat penyimpanan</span>
           </div>
+
 
           <div class="flex justify-end gap-4 pt-4 border-t border-gray-200 w-auto">
             <button type="button" @click="page = 1" class="btn btn-gray">Kembali</button>

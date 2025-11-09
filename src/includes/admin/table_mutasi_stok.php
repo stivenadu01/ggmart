@@ -7,7 +7,7 @@
   </template>
 
   <div class="overflow-auto max-h-[80dvh] custom-scrollbar bg-white rounded-xl shadow-lg border border-gray-100">
-    <table class="app-table text-gray-700">
+    <table class="app-table">
       <thead>
         <tr>
           <th>#</th>
@@ -65,8 +65,16 @@
 
   <!-- PAGINATION -->
   <template x-if="!loading && mutasiStok.length > 0">
-    <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 gabg-gray-50 rounded-b-xl">
-      <p class="text-sm text-gray-500" x-text="`Menampilkan ${mutasiStok.length} dari ${pagination.total} data`"></p>
+    <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 rounded-b-xl gap-4">
+      <p class="text-sm text-gray-500">
+        <span x-text="'Menampilkan '"></span>
+        <select class="inline-block w-20" name="limit" @change="fetchMutasiStok()" x-model="pagination.limit" id="limit">
+          <option value="10">10</option>
+          <option value="20">25</option>
+          <option value="50">50</option>
+        </select>
+        <span x-text="` dari ${pagination.total} Data`"></span>
+      </p>
       <div class="flex flex-wrap gap-2">
         <button @click="prevPage" :disabled="pagination.page === 1"
           class="btn px-3 py-1 w-auto shadow-none bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200">‹</button>

@@ -4,14 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $pageTitle ?> | GG MART | Toko Pangan</title>
-  <link rel="icon" href="<?= ASSETS_URL . '/favicon.ico' ?>" type="image/x-icon">
-  <link rel="stylesheet" href="<?= ASSETS_URL . '/css/app.css' ?>">
+  <link rel="shortcut icon" href="<?= ASSETS_URL . 'favicon.ico' ?>" type="image/x-icon">
+  <title><?= $pageTitle ?> | GG MART</title>
+  <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/app.css">
+  <script src="<?= ASSETS_URL ?>/js/cdn.min.js" defer></script>
   <link rel="manifest" href="<?= BASE_URL . '/manifest.json' ?>">
-  <script src="<?= ASSETS_URL . '/js/cdn.min.js' ?>" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 </head>
 
-<body x-data="navbar()" x-init="init()" class="h-[100dvh] flex flex-col bg-gray-50 text-gray-800">
-  <?php include INCLUDES_PATH . '/user/layout/navbar.php'; ?>
+<body class="bg-gray-50"
+  x-data="{ navOpen: false }">
 
-  <main class="flex-1 overflow-y-auto pt-4 pb-20 px-4 lg:px-10">
+  <?php include INCLUDES_PATH . '/user/layout/navbar.php'; ?>

@@ -2,20 +2,18 @@
 // Seeder kategori GG-Mart
 require_once __DIR__ . '/../config/bootstrap.php';
 
-
 $kategori = [
-  ['nama_kategori' => 'Sembako', 'deskripsi' => 'Berbagai kebutuhan pokok rumah tangga seperti beras, gula, minyak goreng, tepung, dan garam.'],
-  ['nama_kategori' => 'Minuman', 'deskripsi' => 'Aneka minuman kemasan seperti air mineral, teh, kopi, dan minuman ringan.'],
-  ['nama_kategori' => 'Snack & Cemilan', 'deskripsi' => 'Camilan kering maupun basah seperti keripik, biskuit, kacang, dan kue kering.'],
-  ['nama_kategori' => 'Bumbu Dapur', 'deskripsi' => 'Bumbu masak instan, rempah-rempah, saus, kecap, dan penyedap rasa.'],
-  ['nama_kategori' => 'Produk Susu & Olahan', 'deskripsi' => 'Susu cair, susu bubuk, keju, yogurt, dan margarin.'],
-  ['nama_kategori' => 'Sayur & Buah Segar', 'deskripsi' => 'Aneka sayuran dan buah segar hasil petani lokal.'],
-  ['nama_kategori' => 'Daging & Ikan', 'deskripsi' => 'Produk protein hewani seperti ayam, sapi, dan ikan segar maupun beku.'],
-  ['nama_kategori' => 'Makanan Instan', 'deskripsi' => 'Mie instan, bubur instan, sarden, dan makanan siap saji lainnya.'],
-  ['nama_kategori' => 'Kebutuhan Rumah Tangga', 'deskripsi' => 'Barang harian seperti sabun, deterjen, tisu, dan alat kebersihan.'],
-  ['nama_kategori' => 'Produk Lokal GMIT', 'deskripsi' => 'Produk hasil jemaat dan UMKM binaan GMIT seperti madu, keripik pisang, kopi lokal, dan olahan pangan khas daerah.'],
+  ['nama_kategori' => 'Bahan Pokok', 'deskripsi' => 'Berisi berbagai kebutuhan pokok seperti beras, gula, minyak goreng, dan tepung.'],
+  ['nama_kategori' => 'Minuman', 'deskripsi' => 'Kategori minuman kemasan dan serbuk, termasuk air mineral, kopi, teh, dan jus.'],
+  ['nama_kategori' => 'Snack Dan Cemilan', 'deskripsi' => 'Aneka snack, keripik, biskuit, dan makanan ringan khas daerah.'],
+  ['nama_kategori' => 'Bumbu Dapur', 'deskripsi' => 'Berbagai rempah dan bumbu masakan seperti garam, merica, bawang kering, dan saus.'],
+  ['nama_kategori' => 'Kebutuhan Rumah Tangga', 'deskripsi' => 'Barang rumah tangga seperti sabun, detergen, tisu, dan perlengkapan kebersihan.'],
+  ['nama_kategori' => 'Sayur dan Buah', 'deskripsi' => 'Produk segar dari petani lokal, seperti sayuran, buah-buahan, dan hasil kebun.'],
+  ['nama_kategori' => 'Daging dan Ikan', 'deskripsi' => 'Daging segar, ikan, dan produk olahan seperti sosis atau nugget.'],
+  ['nama_kategori' => 'Produk Susu dan Olahan', 'deskripsi' => 'Susu, keju, yogurt, telur ayam kampung, dan olahan lainya.'],
+  ['nama_kategori' => 'Roti dan Kue', 'deskripsi' => 'Aneka roti, kue basah, kue kering, dan hasil produksi UMKM gereja.'],
+  ['nama_kategori' => 'Kerajinan & Tenun', 'deskripsi' => 'Kain tenun, anyaman, dan berbagai hasil kerajinan tangan jemaat atau masyarakat lokal.']
 ];
-
 
 try {
   $inserted = 0;

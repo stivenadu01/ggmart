@@ -7,33 +7,4 @@
       <span class="h-5 w-5" x-html="icon('menu')"></span>
     </button>
   </div>
-  <div>
-    <button @click="logout" class="hover:text-red-500 gap-x-1 flex items-center">
-      <span class="h-5 w-5" x-html="icon('logout')"></span>
-      <span class="md:block hidden">Logout</span>
-    </button>
-  </div>
 </header>
-
-<script>
-  const headerAdmin = () => ({
-    async logout() {
-      try {
-        const res = await fetch(`${baseUrl}/api/auth`, {
-          method: "DELETE"
-        })
-        const data = await res.json();
-        if (data.success) {
-          showFlash(data.message)
-          setInterval(() => {
-            window.location.href = baseUrl
-          }, 1000);
-        } else {
-          showFlash(data.message, 'error')
-        }
-      } catch (error) {
-        showFlash(error, 'error')
-      }
-    }
-  })
-</script>

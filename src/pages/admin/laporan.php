@@ -154,8 +154,9 @@ include INCLUDES_PATH . "admin/layout/header.php";
         class="flex items-center px-4 py-2 rounded-lg shadow-md transition text-white"
         :class="loading && formatProses === 'pdf' ? 'bg-red-600/80 cursor-wait' : 'bg-red-600 hover:bg-red-600/80'">
         <template x-if="loading && formatProses === 'pdf'">
-          <span class="flex items-center">
-            <span class="me-1" x-html="icon('loading')"></span>...
+          <span class="flex items-center justify-center gap-x-2">
+            <span class="w-4 h-4" x-html="icon('spin')"></span>
+            <span>Memporses...</span>
           </span>
         </template>
 

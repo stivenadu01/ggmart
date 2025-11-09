@@ -100,7 +100,7 @@ include INCLUDES_PATH . "/admin/layout/header.php";
                 <label class="block mb-1 font-medium">Harga Pokok/Beli</label>
                 <input step="0.00000000000001" type="number" x-model="form.harga_pokok" @input="syncHargaPokok('harga')" required
                   class="w-full rounded-lg focus:ring-gg-primary focus:border-gg-primary p-2.5">
-                <span class="text-xs text-gray-400">Harga beli satuan</span>
+                <span class="text-xs text-gray-400">harga modal pembelian dari pemasok atau produksi lokal</span>
               </div>
               <div>
                 <label class="block mb-1 font-medium">Total Pokok</label>

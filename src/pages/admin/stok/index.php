@@ -4,7 +4,7 @@ $pageTitle = "Kelola Stok";
 include INCLUDES_PATH . "/admin/layout/header.php";
 ?>
 
-<div x-data="kelolaStokPage()" x-init="fetchMutasiStok()" class="bg-gray-50 p-4 lg:p-6 space-y-4">
+<div x-data="kelolaStokPage()" x-init="fetchMutasiStok()" class="bg-gray-50 p-3 lg:pt-6 space-y-4">
 
   <!-- HEADER -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

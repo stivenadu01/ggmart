@@ -16,7 +16,24 @@
     return roleList.includes(userRole);
   }
 
-
+  async function logout() {
+    try {
+      const res = await fetch(`${baseUrl}/api/auth`, {
+        method: "DELETE"
+      })
+      const data = await res.json();
+      if (data.success) {
+        showFlash(data.message)
+        setInterval(() => {
+          window.location.href = baseUrl
+        }, 1000);
+      } else {
+        showFlash(data.message, 'error')
+      }
+    } catch (error) {
+      showFlash(error, 'error')
+    }
+  }
 
   function formatRupiah(angka, prefix = true) {
     const formatted = new Intl.NumberFormat('id-ID', {

@@ -3,7 +3,7 @@ if (isset($_SESSION['user'])) {
   redirect_back();
 }
 
-$pageTitle = 'Login Admin';
+$pageTitle = 'Login';
 
 require INCLUDES_PATH . "/user/layout/header.php"
 ?>

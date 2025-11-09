@@ -13,6 +13,7 @@ const riwayatTransaksiPage = () => ({
   },
   modalDetail: false,
   detail: [],
+
   cetakUlang(kode) {
     // this.printTransaksi(data.data)
     // window.location.href = `${baseUrl}/admin/transaksi/print?k=${data.data}`;

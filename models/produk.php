@@ -148,10 +148,7 @@ function updateStokProduk($kode_produk)
   $res = $conn->query("SELECT SUM(sisa_stok) AS total FROM mutasi_stok WHERE kode_produk='$kode_produk' AND type='masuk'");
   $stok = $res->fetch_assoc()['total'];
 
-  if (!$stok) {
-    $stok = 0;
-  }
-
+  if (!$stok) $stok = 0;
   // Pastikan integer
   $stok = (int)$stok;
 
@@ -163,7 +160,20 @@ function getProdukTrx($search)
 {
   global $conn;
   $safe = "%" . $conn->real_escape_string($search) . "%";
-  $res = $conn->query("SELECT p.*, k.nama_kategori FROM produk p LEFT JOIN kategori k ON p.id_kategori = k.id_kategori WHERE nama_produk LIKE '$safe' OR kode_produk LIKE '$safe' ORDER BY stok DESC LIMIT 10");
+  $res = $conn->query("SELECT
+    p.kode_produk, p.nama_produk, p.harga_jual, p.satuan_dasar,p.stok,p.terjual,p.gambar, k.nama_kategori
+    FROM produk p
+    LEFT JOIN kategori k ON p.id_kategori = k.id_kategori
+    WHERE nama_produk LIKE '$safe' OR kode_produk LIKE '$safe'
+    ORDER BY
+      CASE
+        WHEN terjual = 0 THEN 3
+        WHEN stok = 0 THEN 3
+      END,
+      is_lokal DESC,
+      terjual DESC,
+      stok DESC LIMIT 10
+  ");
   $data = [];
   while ($row = $res->fetch_assoc()) {
     $data[] = $row;

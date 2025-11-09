@@ -1,66 +1,164 @@
-<header class="bg-white border-b shadow-sm z-30 relative">
-  <div class="hidden md:flex justify-end text-sm text-gray-600/80 border-b px-10 py-2 bg-gray-50">
-    <a :href="baseUrl + '/tentang'" class="hover:text-gg-primary transition">Tentang Kami</a>
-    <a :href="baseUrl + '/kontak'" class="hover:text-gg-primary transition ml-4">Hubungi Kami</a>
-  </div>
+<header x-data="" class="fixed top-0 w-full bg-gg-primary text-white font-sans shadow-medium bg-gradient-to-br from-gg-primary to-gg-secondary">
 
-  <div class="flex items-center justify-between px-4 lg:px-10 py-3">
-    <a :href="baseUrl" class="flex items-center gap-2">
-      <img :src="assetsUrl + '/logo.png'" alt="GG Mart Logo" class="h-10">
-      <h1 class="hidden md:block text-2xl font-bold text-gg-primary tracking-tight">GG MART</h1>
-    </a>
-
-    <div class="flex items-center gap-4">
-      <!-- Desktop menu -->
-      <nav class="hidden md:flex items-center gap-5 text-sm font-medium">
-        <a :href="`${baseUrl}/user/produk`" class="hover:text-gg-primary transition">Produk</a>
-        <a :href="`${baseUrl}/user/keranjang`" class="hover:text-gg-primary transition relative">
-          Keranjang
-          <span x-show="cartCount > 0"
-            class="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5"
-            x-text="cartCount"></span>
+  <div class="md:px-6 lg:px-12 xl:px-16">
+    <!-- 🔹 TOPBAR -->
+    <div class="hidden md:flex justify-between items-center py-2 text-sm">
+      <div class="flex space-x-4">
+        <a href="#" class="font-extralight hover:opacity-75 transition text-white">Gabung Jadi Mitra UMKM GG MART
         </a>
-        <a :href="`${baseUrl}/admin/dashboard`" class="hover:text-gg-primary transition">Kelola Toko</a>
-      </nav>
-
-      <!-- Mobile menu button -->
-      <button @click="menuOpen = true" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition">
-        <span class="h-5 w-5" x-html="icon('menu')"></span>
-      </button>
+        <span class="font-extralight">|</span>
+        <a href="#" class="font-extralight hover:opacity-75 transition text-white">Lihat Cara Bergabung
+        </a>
+        <span class="font-extralight">|</span>
+        <a href="#" class="font-extralight hover:opacity-75 transition">Ikuti Kami</a>
+        </a>
+      </div>
+      <div class="flex space-x-4 items-center">
+        <a href="#" class="font-extralight hover:opacity-75 transition text-white">Bantuan</a>
+        <template x-if="!currentUser">
+          <a :href="baseUrl + '/auth/login'" class="font-extralight hover:opacity-75 transition text-white">Login</a>
+        </template>
+        <template x-if="currentUser">
+          <div class="flex items-center space-x-2">
+            <a :href="baseUrl + '/admin/dashboard'" class="font-extralight hover:opacity-75 transition text-white">Kelola Toko</a>
+            <span x-html="icon('user')" class="w-6 h-6 ms-5"></span>
+            <span x-text="currentUser.nama"></span>
+          </div>
+        </template>
+      </div>
     </div>
-  </div>
+    <!-- 🔸 MAIN HEADER -->
+    <div class="flex flex-wrap justify-between items-center px-4 md:px-8 py-3">
+      <!-- LOGO -->
+      <a href="/" class="flex items-center space-x-2">
+        <img :src="assetsUrl + '/logo.png'" alt="GG MART" class="h-8 md:h-10 filter logo">
+        <span class="text-2xl font-bold tracking-tight text-white drop-shadow hidden md:block">GG MART</span>
+      </a>
 
-  <!-- Mobile Menu -->
-  <div x-show="menuOpen" x-transition class="fixed inset-0 z-40 md:hidden flex" x-cloak>
-    <div class="bg-black/40 absolute inset-0" @click="menuOpen = false"></div>
-    <aside
-      class="relative bg-white w-3/4 max-w-xs h-full shadow-2xl overflow-y-auto transform transition-all duration-300"
-      x-show="menuOpen" x-transition:enter="translate-x-0" x-transition:leave="translate-x-full">
-      <div class="flex justify-between items-center bg-gg-primary p-4">
-        <span class="text-white font-semibold text-lg">Menu Utama</span>
-        <button @click="menuOpen = false" class="p-1 text-white hover:bg-white/20 rounded-full">
-          ✕
+      <!-- SEARCH BAR (desktop) -->
+      <div class="flex-1 max-w-2xl mx-4 hidden md:flex">
+        <input type="text" placeholder="Cari produk, kategori, atau brand..."
+          class="flex-1 px-4 py-2 rounded-l-xl text-gray-800 focus:outline-none shadow-soft">
+        <button class="bg-gg-secondary px-4 py-2 rounded-r-xl hover:bg-gg-accent transition">
+          🔍
         </button>
       </div>
-      <?php include INCLUDES_PATH . "/user/layout/list_menu_mobile.php"; ?>
+
+      <!-- ICONS -->
+      <div class="flex items-center space-x-4">
+        <button class="relative">
+          <span class="w-6 lg:w-8 fill-current" x-html="icon('keranjang')"></span>
+          <span class="absolute -top-1 -right-2 bg-gg-accent text-xs rounded-full px-1">3</span>
+        </button>
+        <button class="md:hidden w-6" @click="navOpen = !navOpen" x-html="icon('menu')"></button>
+      </div>
+    </div>
+  </div>
+  <!-- 🔻 NAVBAR (desktop) -->
+  <nav class="hidden md:flex flex-nowrap justify-center text-sm py-2 space-x-6 !text-white border-t border-white/20 font-medium" x-cloak>
+    <a :href="baseUrl" class="hover:opacity-75">
+      <!-- <span class="w-4 fill-current" x-html="icon('home')"></span> -->
+      Home
+    </a>
+    <a :href="`${baseUrl}/user/produk`" class="hover:opacity-75">
+      <!-- <span class="w-4 fill-current" x-html="icon('produk')"></span> -->
+      Produk
+    </a>
+    <a :href="`${baseUrl}/tentang`" class="hover:opacity-75">
+      <!-- <span class="w-4 fill-current" x-html="icon('produk')"></span> -->
+      Tentang Kami
+    </a>
+    <a :href="`${baseUrl}/kontak`" class="hover:opacity-75">
+      <!-- <span class="w-4 fill-current" x-html="icon('produk')"></span> -->
+      Hubungi Kami
+    </a>
+    <a :href="`${baseUrl}/galeri`" class="hover:opacity-75">
+      <!-- <span class="w-4 fill-current" x-html="icon('gambar')"></span> -->
+      Galery Foto
+    </a>
+  </nav>
+
+  <!-- 📱 MOBILE SIDEBAR -->
+  <div
+    x-cloak
+    x-show="navOpen"
+    class="fixed inset-0 flex z-30 lg:hidden text-slate-900"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 -translate-x-full"
+    x-transition:enter-end="opacity-100 translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 translate-x-0"
+    x-transition:leave-end="opacity-0 -translate-x-full">
+
+    <!-- Sidebar -->
+    <aside class="relative w-full bg-gray-100 shadow-md flex flex-col z-50">
+      <div class="flex items-center bg-white justify-between p-3 border-b">
+        <!-- LOGO -->
+        <a href="/" class="flex items-center gap-x-4">
+          <img :src="assetsUrl + '/logo.png'" alt="GG MART" class="h-8 filter logo">
+          <span class="font-bold text-xl">Menu Utama</span>
+        </a>
+        <button @click="navOpen = false" class="p-2 rounded hover:bg-gray-100">
+          <span class="w-6" x-html="icon('x')"></span>
+        </button>
+      </div>
+
+      <!-- MENU ITEMS -->
+      <nav class="space-y-5">
+
+        <section class="bg-white flex flex-col p-4 space-y-5">
+          <a :href="baseUrl" class="menu-item">
+            <span class="w-5 fill-current" x-html="icon('home')"></span>
+            Home
+          </a>
+          <a :href="`${baseUrl}/user/produk`" class="menu-item">
+            <span class="w-5 fill-current" x-html="icon('produk')"></span>
+            Produk
+          </a>
+          <a :href="`${baseUrl}/tentang`" class="menu-item">
+            <span class="w-5 h-6 fill-current" x-html="icon('about')"></span>
+            Tentang Kami
+          </a>
+          <a :href="`${baseUrl}/kontak`" class="menu-item">
+            <span class="w-5 fill-current" x-html="icon('email')"></span>
+            Hubungi Kami
+          </a>
+          <a :href="`${baseUrl}/galeri`" class="menu-item">
+            <span class="w-5 fill-current" x-html="icon('galeri')"></span>
+            Galery Foto
+          </a>
+        </section>
+
+        <section class="bg-white flex flex-col p-4 py-2 space-y-5">
+          <a :href="baseUrl" class="menu-item">
+            <span class="w-7 fill-current" x-html="icon('jabatTangan')"></span>
+            Gabung Jadi Mitra UMKM GG MART
+          </a>
+          <a :href="baseUrl" class="menu-item">
+            <span class="w-5 fill-current" x-html="icon('buku')"></span>
+            Lihat Cara Bergabung
+          </a>
+          <a :href="baseUrl" class="menu-item">
+            <span class="w-5 fill-current" x-html="icon('tanya')"></span>
+            Bantuan
+          </a>
+          <template x-if="!currentUser">
+            <a :href="`${baseUrl}/auth/login`" class="menu-item">
+              <span class="w-5 fill-current" x-html="icon('login')"></span>
+              Login
+            </a>
+          </template>
+          <template x-if="currentUser">
+            <a :href="`${baseUrl}/admin/dashboard`" class="menu-item">
+              <span class="w-5 fill-current" x-html="icon('pengaturan')"></span>
+              Kelola Toko
+            </a>
+          </template>
+        </section>
+
+      </nav>
     </aside>
   </div>
 </header>
 
-<script>
-  function navbar() {
-    return {
-      baseUrl: "<?= BASE_URL ?>",
-      assetsUrl: "<?= ASSETS_URL ?>",
-      menuOpen: false,
-      cartCount: 0,
-      init() {
-        this.updateCartCount();
-      },
-      updateCartCount() {
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        this.cartCount = cart.length;
-      }
-    };
-  }
-</script>
+<main class="mt-[3.52rem] md:mt-[8.57rem]">

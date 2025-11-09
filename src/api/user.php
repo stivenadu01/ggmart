@@ -67,7 +67,7 @@ switch ($method) {
       }
 
       // Cek email sudah digunakan?
-      if (!findUserByEmail($input_data['email'])) {
+      if (findUserByEmail($input_data['email'])) {
         throw new Exception('Email sudah digunakan oleh user lain.', 409);
       }
 

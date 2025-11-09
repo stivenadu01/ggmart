@@ -102,3 +102,31 @@ CREATE TABLE IF NOT EXISTS setting (
     value TEXT NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
+
+-- index
+ALTER TABLE produk
+  ADD INDEX idx_kode_produk (kode_produk),
+  ADD INDEX idx_nama_produk (nama_produk),
+  ADD INDEX idx_id_kategori (id_kategori),
+  ADD INDEX idx_tanggal_dibuat (tanggal_dibuat);
+
+ALTER TABLE kategori ADD INDEX idx_id_kategori (id_kategori);
+
+ALTER TABLE detail_transaksi
+  ADD INDEX idx_kode_transaksi (kode_transaksi),
+  ADD INDEX idx_kode_produk (kode_produk);
+
+ALTER TABLE transaksi
+  ADD INDEX idx_kode_transaksi (kode_transaksi),
+  ADD INDEX idx_tanggal_transaksi (tanggal_transaksi),
+  ADD INDEX idx_metode_bayar (metode_bayar),
+  ADD INDEX idx_id_user (id_user);
+
+ALTER TABLE user
+  ADD INDEX idx_email (email),
+  ADD INDEX idx_id_user (id_user);
+
+ALTER TABLE mutasi_stok
+  ADD INDEX idx_tanggal(tanggal);

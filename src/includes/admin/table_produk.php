@@ -8,8 +8,8 @@
   </template>
 
   <div class="overflow-auto max-h-[80dvh] custom-scrollbar bg-white rounded-xl shadow-lg border border-gray-100">
-    <table class="app-table min-w-full text-sm text-gray-700">
-      <thead class="sticky top-0 bg-gray-100">
+    <table class="app-table">
+      <thead>
         <tr>
           <th class="w-[30px] text-center">#</th>
           <th class="w-[280px]">Produk</th>
@@ -24,7 +24,7 @@
       <tbody>
         <template x-if="produk.length> 0 && !loading">
           <template x-for="p, i in produk" :key="p.kode_produk">
-            <tr class="border-b hover:bg-gray-50 transition">
+            <tr>
               <!-- NO -->
               <td class="text-center whitespace-nowrap" x-text="i + 1 + (pagination.page-1)*pagination.limit"></td>
               <!-- PRODUK -->
@@ -66,7 +66,7 @@
               <!-- IS LOKAL -->
               <td class="text-center">
                 <span
-                  :class="p.is_lokal == 1 ? 'bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md text-xs font-semibold' : 'bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md text-xs font-semibold'"
+                  :class="p.is_lokal == 1 ? 'bg-gg-primary/50 text-gg-primary px-2 py-0.5 rounded-md text-xs font-semibold' : 'bg-gray-500/50 text-gray-500 px-2 py-0.5 rounded-md text-xs font-semibold'"
                   x-text="p.is_lokal == 1 ? 'YA' : 'TIDAK'"></span>
               </td>
 
@@ -99,8 +99,16 @@
 
   <!-- PAGINATION -->
   <template x-if="!loading && produk.length > 0">
-    <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 gabg-gray-50 rounded-b-xl">
-      <p class="text-sm text-gray-500" x-text="`Menampilkan ${produk.length} dari ${pagination.total} data`"></p>
+    <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 gabg-gray-50 rounded-b-xl gap-4">
+      <p class="text-sm text-gray-500">
+        <span x-text="'Menampilkan '"></span>
+        <select class="inline-block w-20" name="limit" @change="fetchProduk()" x-model="pagination.limit" id="limit">
+          <option value="10">10</option>
+          <option value="20">25</option>
+          <option value="50">50</option>
+        </select>
+        <span x-text="` dari ${pagination.total} Produk`"></span>
+      </p>
       <div class="flex flex-wrap gap-2">
         <button @click="prevPage" :disabled="pagination.page === 1"
           class="btn px-3 py-1 w-auto shadow-none bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200">‹</button>

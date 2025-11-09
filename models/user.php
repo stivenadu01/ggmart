@@ -119,5 +119,5 @@ function findUserByEmail($email)
   $user = $result->fetch_assoc();
 
   $stmt->close();
-  return $user ?: null;
+  return $user;
 }

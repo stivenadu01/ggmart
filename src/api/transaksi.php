@@ -28,7 +28,7 @@ switch ($method) {
       $search = trim($_GET['search'] ?? null);
       $start  = $_GET['start'] ?? null;
       $end    = $_GET['end'] ?? null;
-      $metode = $_GET['metode'] ?? null;
+      $metode = $_GET['metode'] ?? null; 
 
       [$data, $total, $totalSummary] = getTransaksiList($page, $limit, $search, $start, $end, $metode);
 

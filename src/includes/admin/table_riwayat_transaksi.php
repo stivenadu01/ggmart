@@ -84,7 +84,7 @@
       <tbody>
         <template x-if="!loading && transaksi.length > 0">
           <template x-for="t, i in transaksi" :key="t.kode_transaksi">
-            <tr class="border-b hover:bg-gray-50 transition">
+            <tr>
               <!-- NO -->
               <td x-text="i + 1 + (pagination.page-1)*pagination.limit"></td>
               <!-- KODE TRANSAKSI -->
@@ -139,8 +139,16 @@
 
   <!-- PAGINATION -->
   <template x-if="!loading && transaksi.length > 0">
-    <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
-      <p class="text-sm text-gray-500" x-text="`Menampilkan ${transaksi.length} dari ${pagination.total} transaksi`"></p>
+    <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl gap-4">
+      <p class="text-sm text-gray-500">
+        <span x-text="'Menampilkan '"></span>
+        <select class="inline-block w-16" name="limit" @change="fetchTransaksi()" x-model="pagination.limit" id="limit">
+          <option value="10">10</option>
+          <option value="20">25</option>
+          <option value="50">50</option>
+        </select>
+        <span x-text="` dari ${pagination.total} Transaksi`"></span>
+      </p>
       <div class="flex flex-wrap gap-2">
         <button @click="prevPage" :disabled="pagination.page === 1"
           class="btn px-3 py-1 w-auto shadow-none bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200">‹</button>
