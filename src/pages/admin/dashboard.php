@@ -22,5 +22,5 @@ include INCLUDES_PATH . "/admin/layout/header.php";
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="<?= ASSETS_URL ?>/js/dashboardAdminPage.js"></script>
+<script src="<?= ASSETS_URL ?>/js/admin/dashboardAdminPage.js"></script>
 <?php include INCLUDES_PATH . "/admin/layout/footer.php"; ?>

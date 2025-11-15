@@ -178,6 +178,6 @@ include INCLUDES_PATH . "admin/layout/header.php";
   <div class="printFrame hidden"></div>
 </div>
 
-<script src="<?= ASSETS_URL . '/js/transaksiPage.js' ?>"></script>
+<script src="<?= ASSETS_URL . '/js/admin/transaksiPage.js' ?>"></script>
 <?php
 include INCLUDES_PATH . "admin/layout/footer.php";

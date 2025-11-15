@@ -35,5 +35,5 @@ include INCLUDES_PATH . "/admin/layout/header.php";
   </div>
 </div>
 
-<script src=" <?= ASSETS_URL . 'js/kategoriFormPage.js' ?>"></script>
+<script src=" <?= ASSETS_URL . 'js/admin/kategoriFormPage.js' ?>"></script>
 <?php include INCLUDES_PATH . "admin/layout/footer.php"; ?>

@@ -7,7 +7,7 @@ function produkFormPage(act, id) {
     isEdit: act === 'edit',
     formTitle: act === 'edit' ? 'Edit Produk' : 'Tambah Produk',
     fileName: '',
-    dragOver: false, // <- baru
+    dragOver: false,
     form: {
       id_kategori: '',
       nama_produk: '',

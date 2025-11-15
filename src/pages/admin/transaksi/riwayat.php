@@ -168,6 +168,6 @@ include INCLUDES_PATH . "admin/layout/header.php";
   </template>
 </div>
 
-<script src="<?= ASSETS_URL ?>/js/riwayatTransaksiPage.js"></script>
+<script src="<?= ASSETS_URL ?>/js/admin/riwayatTransaksiPage.js"></script>
 
 <?php include INCLUDES_PATH . "/admin/layout/footer.php"; ?>

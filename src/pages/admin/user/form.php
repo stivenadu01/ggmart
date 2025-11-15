@@ -82,6 +82,6 @@ $id = $_GET['id'] ?? '';
   </div>
 </div>
 
-<script src="<?= ASSETS_URL . "js/userFormPage.js" ?>"></script>
+<script src="<?= ASSETS_URL . "js/admin/userFormPage.js" ?>"></script>
 
 <?php include INCLUDES_PATH . "/admin/layout/footer.php"; ?>

@@ -141,5 +141,5 @@ include INCLUDES_PATH . "/admin/layout/header.php";
   </div>
 </div>
 
-<script src="<?= ASSETS_URL . '/js/produkFormPage.js' ?>"></script>
+<script src="<?= ASSETS_URL . '/js/admin/produkFormPage.js' ?>"></script>
 <?php include INCLUDES_PATH . "/admin/layout/footer.php"; ?>

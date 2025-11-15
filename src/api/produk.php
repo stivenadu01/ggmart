@@ -91,10 +91,9 @@ switch ($method) {
           throw new Exception('Format gambar tidak didukung (hanya JPG, PNG, WEBP).', 415);
         }
 
-        $targetDir = ROOT_PATH . '/public/uploads/';
-        if (!is_dir($targetDir)) mkdir($targetDir, 0755, true);
-
-        $filename = $new_kode_produk . '.webp'; // disimpan sebagai webp
+        $targetDir = ROOT_PATH . '/public/uploads';
+        if (!is_dir($targetDir . "/produk/")) mkdir($targetDir . "/produk/", 0755, true);
+        $filename = "/produk/$new_kode_produk.webp"; // disimpan sebagai webp
         $targetFile = $targetDir . $filename;
 
         // Baca gambar sesuai jenisnya
@@ -157,7 +156,7 @@ switch ($method) {
         throw new Exception('Nama dan Harga wajib diisi.', 422);
       }
 
-      $targetDir = ROOT_PATH . '/public/uploads/';
+      $targetDir = ROOT_PATH . '/public/uploads';
       if (!is_dir($targetDir)) mkdir($targetDir, 0755, true);
 
       // === Upload & kompres gambar baru jika ada ===
@@ -183,7 +182,7 @@ switch ($method) {
           if (file_exists($oldPath)) unlink($oldPath);
         }
 
-        $filename = $kode_produk . '.webp';
+        $filename = "/produk/$kode_produk.webp";
         $targetFile = $targetDir . $filename;
 
         // Jika GD aktif, resize + konversi + kompres
@@ -248,7 +247,7 @@ switch ($method) {
       $produk_lama = findProduk($kode_produk);
       if ($produk_lama['stok'] != 0) throw new Exception("Stok produk masih tersedia, Silahkan kurangi dulu", 400);
       if ($produk_lama && !empty($produk_lama['gambar'])) {
-        $path = ROOT_PATH . '/public/uploads/' . $produk_lama['gambar'];
+        $path = ROOT_PATH . '/public/uploads' . $produk_lama['gambar'];
         if (file_exists($path)) unlink($path);
       }
       if (!hapusProduk($kode_produk)) {
