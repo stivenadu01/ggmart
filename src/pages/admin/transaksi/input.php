@@ -67,7 +67,7 @@ include INCLUDES_PATH . "admin/layout/header.php";
 
 
     <div class="fixed bottom-0 w-full md:static md:w-1/3 bg-white rounded-xl shadow-2xl flex flex-col">
-      <div x-cloak x-show="openRincian" class="flex items-center justify-between text-emerald-700 mb-2 px-4 border-b pb-4">
+      <div x-cloak :class="openRincian ? 'flex' : 'hidden md:flex'" class="items-center justify-between text-emerald-700 mb-2 px-4 border-b pb-4 pt-3 md:pt-0 border-t md:border-t-0">
         <h2 class="text-xl font-extrabold">RINCIAN TRANSAKSI</h2>
 
         <div class="flex justify-center items-center gap-x-4">
@@ -77,11 +77,11 @@ include INCLUDES_PATH . "admin/layout/header.php";
             <span class="mr-1 text-sm">Reset </span>
             <span class="w-4 h-4 fill-current" x-html="icon('refresh')"></span>
           </button>
-          <button x-show="openRincian" @click="openRincian = false" class="w-5 h-5 fill-current" x-html="icon('arrowCloseAtasBawah')"></button>
+          <button x-cloak :class="openRincian ? 'flex' : 'flex md:hidden'" @click="openRincian = false" class="w-5 h-5 fill-current" x-html="icon('arrowCloseAtasBawah')"></button>
         </div>
       </div>
 
-      <div x-cloak x-show="openRincian" class="flex flex-1 flex-col space-y-3 p-4 overflow-y-auto max-h-[43dvh]">
+      <div x-cloak :class="openRincian ? 'flex' : 'hidden md:flex'" class="flex-1 flex-col space-y-3 p-4 overflow-y-auto max-h-[43dvh]">
         <template x-for="(item, index) in keranjang" :key="item.kode_produk">
           <div class="flex justify-between items-center border-b border-gray-200 pb-3 hover:bg-gray-50 -mx-4 px-4 transition duration-200">
             <div class="flex-1 pr-2">
@@ -118,7 +118,7 @@ include INCLUDES_PATH . "admin/layout/header.php";
           <div>TOTAL</div>
           <div class="flex gap-x-4 justify-center items-center">
             <span x-text="formatRupiah(totalHarga)"></span>
-            <button x-show="!openRincian" @click="openRincian = true" class="w-5 h-5 fill-current" x-html="icon('arrowOpenAtasBawah')"></button>
+            <button x-cloak :class="openRincian ? 'hidden' : 'flex md:hidden'" @click="openRincian = true" class="w-5 h-5 fill-current" x-html="icon('arrowOpenAtasBawah')"></button>
           </div>
         </div>
 

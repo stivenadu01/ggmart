@@ -117,7 +117,7 @@
   <button
     x-cloak
     onclick="logout()"
-    class="w-full btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/pengaturan') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Logout">
+    class="w-full btn btn-primary shadow-none gap-2 justify-start bg-transparent text-neutral-900 hover:bg-gg-primary/80 hover:text-white" title="Logout">
     <span class="h-5 w-5" x-html="icon('logout')"></span>
     <span
       x-cloak

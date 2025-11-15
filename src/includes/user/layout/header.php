@@ -12,7 +12,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="bg-gray-50"
+<body class="bg-gray-50 min-h-[100dvh] flex"
   x-data="{ navOpen: false }">
 
-  <?php include INCLUDES_PATH . '/user/layout/navbar.php'; ?>
+
+  <?php include INCLUDES_PATH . '/user/layout/mobile_sidebar.php'; ?>
+
+  <?php
+  if (!isset($jenis_navbar)) {
+    include INCLUDES_PATH . '/user/layout/navbar_utama.php';
+  } elseif ($jenis_navbar == 'minimal') {
+    include INCLUDES_PATH . '/user/layout/navbar_minimal.php';
+  };
+  ?>

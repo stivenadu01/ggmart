@@ -7,9 +7,9 @@
     <!-- Header Sidebar -->
     <div class="flex items-center justify-between px-4 py-2 border-b">
       <div class="flex items-center">
-        <div x-show="!sidebarCollapse" class="h-10 w-10 p-1">
+        <a :href="baseUrl" x-show="!sidebarCollapse" class="h-10 w-10 p-1">
           <img :src="assetsUrl + 'logo.png'" alt="GG MART" class="h-full w-full object-contain">
-        </div>
+        </a>
         <span x-show="!sidebarCollapse" class="font-bold text-xl text-gg-primary">
           Menu
         </span>
@@ -25,7 +25,8 @@
         x-show="sidebarCollapse"
         class="relative flex justify-center items-center rounded hover:bg-gray-100 transition-all duration-100 group cursor-e-resize"
         title="Buka Sidebar">
-        <!-- Logo tampil default -->
+
+        <!-- Logo -->
         <div class="h-10 w-10 p-1 transition-opacity duration-200 group-hover:opacity-0">
           <img :src="assetsUrl + 'logo.png'" alt="GG MART" class="h-full w-full object-contain">
         </div>
@@ -59,13 +60,13 @@
     <div @click="sidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50"></div>
 
     <aside class="relative w-64 bg-white shadow-md flex flex-col z-50">
-      <div class="flex items-center justify-between p-2 border-b">
+      <a :href="baseUrl" class="flex items-center justify-between p-2 border-b">
         <span><img :src="assetsUrl  + '/logo.png'" alt="" class="h-10 inline-block"></span>
         <span class="text-gg-primary font-bold">Menu</span>
         <button @click="sidebarOpen = false" class="p-2 rounded hover:bg-gray-100">
           <span class="h-5 w-5" x-html="icon('arrowkiri2')"></span>
         </button>
-      </div>
+      </a>
 
       <!-- MENU -->
       <?php include INCLUDES_PATH . "/admin/layout/list_menu.php" ?>
