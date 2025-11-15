@@ -104,6 +104,20 @@ CREATE TABLE IF NOT EXISTS setting (
 );
 
 
+CREATE TABLE IF NOT EXISTS landing_hero (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,  
+    subtitle VARCHAR(50) NOT NULL,
+    cta_primary_text VARCHAR(50),
+    cta_primary_url VARCHAR(100),
+    cta_secondary_text VARCHAR(50),
+    cta_secondary_url VARCHAR(100),
+    `text` VARCHAR (100),
+    urutan INT DEFAULT 0,
+    image_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- index
 ALTER TABLE produk

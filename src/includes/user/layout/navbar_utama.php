@@ -1,4 +1,4 @@
-<header x-data="" class="fixed top-0 w-full text-white font-sans shadow-medium bg-gradient-to-t from-gg-primary to-gg-secondary">
+<header x-data="" class="fixed z-20 top-0 w-full text-white font-sans shadow-medium bg-gradient-to-t from-gg-primary to-gg-secondary">
 
   <div x-cloak class="md:px-6 lg:px-12 xl:px-16">
 
@@ -46,7 +46,7 @@
                 placeholder="Cari Produk atau kategori..."
                 class="w-full form-input h-10 border border-gray-300 !rounded-sm text-sm focus:border-gg-primary focus:ring-gg-primary">
               <span class="">
-                <button type="submit" class="md:bg-gradient-to-br from-gg-primary to-gg-secondary md:text-white text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer p-[5px] rounded-sm">
+                <button type="submit" class="md:bg-gradient-to-br from-gg-primary to-gg-secondary md:text-white text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer py-[5px] px-3 hover:opacity-80 rounded-sm">
                   <span class="w-5 md:w-6" x-html="icon('cari')"></span>
                 </button>
               </span>
@@ -91,4 +91,4 @@
   </nav>
 </header>
 
-<main class="mt-[3.51rem] md:mt-[8.57rem] flex min-h-full">
+<main class="mt-[3.53rem] md:mt-[9rem] flex min-h-full">

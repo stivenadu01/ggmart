@@ -1,25 +1,30 @@
-const settingPage = () => ({
+const pengaturanPage = () => ({
   loading: false,
   currentTab: 0,
   tabs: [
-    { name: "sistem", label: "Sistem" },
-    { name: "email", label: "Email" },
+    { name: 'system', label: 'Sistem' },
+    { name: 'carousel', label: 'Carousel Landing' }
   ],
-  settings: {},
 
+  settings: {},
+  hero: {},
+
+  init() {
+    this.$watch("currentTab", (tab) => {
+      if (tab === 0) this.fetchSettings();
+      if (tab === 1) this.fetchHero();
+    });
+
+    this.fetchSettings();
+  },
+
+  // SETTINGS
   async fetchSettings() {
     try {
       this.loading = true;
       const res = await fetch(`${baseUrl}/api/setting`);
       const data = await res.json();
-      if (data.success) {
-        this.settings = data.data;
-      } else {
-        showFlash(data.message, 'warning');
-      }
-    } catch (err) {
-      showFlash("Gagal memuat pengaturan", "error");
-      console.error(err);
+      if (data.success) this.settings = data.data;
     } finally {
       this.loading = false;
     }
@@ -33,17 +38,22 @@ const settingPage = () => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this.settings)
       });
-      const data = await res.json();
-      if (data.success) {
+      const r = await res.json();
+      if (r.success) {
         showFlash("Pengaturan berhasil disimpan");
       } else {
-        showFlash(data.message, 'error');
+        throw new Error(r.message);
       }
-    } catch (err) {
-      console.error(err);
-      showFlash("Terjadi kesalahan saat menyimpan", "error");
+    } catch (error) {
+      console.log(error);
     } finally {
       this.loading = false;
     }
+
+  },
+
+  // HERO/CAROUSEL
+  async fetchHero() {
+
   }
 });

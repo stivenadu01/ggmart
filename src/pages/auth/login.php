@@ -17,7 +17,7 @@ require INCLUDES_PATH . "/user/layout/header.php"
       </div>
       <div class="md:block hidden text-center text-2xl font-poppins">
         <p>GG MART</p>
-        <p>Tempat Belanja Produk Lokal Nomor 1</p>
+        <p>Gerakan Beli Produk Lokal</p>
       </div>
     </div>
 

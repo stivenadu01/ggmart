@@ -1,7 +1,7 @@
 <?php
 models('User');
-require_once ROOT_PATH . '/config/api_init.php';
 models('Setting');
+require_once ROOT_PATH . '/config/api_init.php';
 
 $res = [];
 $status = 200;
@@ -21,8 +21,9 @@ switch ($method) {
         ];
         break;
       }
+
       $data = getAllSetting();
-      if (!$data) throw new Exception("Gagal mengambil data", 1);
+      if (!$data) throw new Exception("Gagal mengambil data", 500);
       $res = [
         'success' => true,
         'data' => $data
