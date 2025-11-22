@@ -1,4 +1,4 @@
-<header x-data="" class="fixed top-0 z-10 w-full text-slate-900 font-sans bg-white shadow-sm">
+<header x-data="" class="fixed top-0 z-20 w-full text-slate-900 font-sans bg-white shadow-sm">
   <div x-cloak class="md:px-6 lg:px-12 xl:px-16 py-3">
     <!-- 🔸 MAIN HEADER -->
     <div class="flex flex-wrap justify-between items-center px-2 md:px-8 md:py-3">

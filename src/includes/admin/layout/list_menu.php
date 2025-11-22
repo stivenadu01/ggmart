@@ -1,4 +1,4 @@
-<nav class="flex-1 p-2 space-y-2 list-menu">
+<nav class="flex-1 p-2 space-y-1 list-menu">
 
   <a
     x-cloak x-show="hasRole(['admin','manager'])" :href="baseUrl + '/admin/dashboard'"
@@ -112,6 +112,18 @@
       x-transition:enter="transition duration-200 ease-out"
       x-transition:enter-start="opacity-0"
       x-transition:enter-end="opacity-100">Pengaturan</span>
+  </a>
+
+  <a
+    x-cloak x-show="hasRole(['admin'])" :href="baseUrl + '/admin/landingHero'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/landingHero') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Landing Hero">
+    <span class="h-6 w-6" x-html="icon('landingHero')"></span>
+    <span
+      x-cloak
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Landing Hero</span>
   </a>
 
   <button

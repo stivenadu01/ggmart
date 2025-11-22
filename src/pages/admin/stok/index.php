@@ -88,5 +88,5 @@ include INCLUDES_PATH . "/admin/layout/header.php";
   </template>
 </div>
 
-<script src="<?= ASSETS_URL . '/js/kelolaStokPage.js' ?>"></script>
+<script src="<?= ASSETS_URL . '/js/admin/kelolaStokPage.js' ?>"></script>
 <?php include INCLUDES_PATH . "/admin/layout/footer.php"; ?>

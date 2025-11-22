@@ -49,5 +49,5 @@ include INCLUDES_PATH . "admin/layout/header.php";
 </div>
 
 
-<script src="<?= ASSETS_URL . '/js/kelolaKategoriPage.js' ?>"></script>
+<script src="<?= ASSETS_URL . '/js/admin/kelolaKategoriPage.js' ?>"></script>
 <?php include INCLUDES_PATH . "/admin/layout/footer.php"; ?>

@@ -21,12 +21,12 @@ CREATE TABLE IF NOT EXISTS kategori (
 
 -- TABLE: produk
 CREATE TABLE IF NOT EXISTS produk (
-    kode_produk CHAR(15) PRIMARY KEY,
+    kode_produk VARCHAR(15) PRIMARY KEY,
     id_kategori INT,
     nama_produk VARCHAR(150) NOT NULL,
     deskripsi TEXT,
     harga_jual DECIMAL(12, 2) NOT NULL,
-    satuan_dasar CHAR(10),
+    satuan_dasar VARCHAR(10),
     is_lokal TINYINT(1) DEFAULT 0,
     stok INT DEFAULT 0,
     terjual INT DEFAULT 0,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS produk (
 
 CREATE TABLE IF NOT EXISTS mutasi_stok (
   id_mutasi INT AUTO_INCREMENT PRIMARY KEY,
-  kode_produk CHAR(15),
+  kode_produk VARCHAR(15),
   nama_produk VARCHAR(150), -- kalau produk dihapus tetap ada nama
   type ENUM('masuk','keluar') NOT NULL,
   jumlah INT NOT NULL,
@@ -55,10 +55,9 @@ CREATE TABLE IF NOT EXISTS mutasi_stok (
     ON UPDATE CASCADE
 );
 
-
 -- TABLE: transaksi
 CREATE TABLE IF NOT EXISTS transaksi (
-    kode_transaksi CHAR(15) PRIMARY KEY,
+    kode_transaksi VARCHAR(15) PRIMARY KEY,
     id_user INT,
     tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
     total_harga DECIMAL(12, 2) NOT NULL,
@@ -75,8 +74,8 @@ CREATE TABLE IF NOT EXISTS transaksi (
 -- TABLE: detail_transaksi
 CREATE TABLE IF NOT EXISTS detail_transaksi (
     id_detail INT AUTO_INCREMENT PRIMARY KEY,
-    kode_transaksi CHAR(15) NOT NULL,
-    kode_produk CHAR(15),
+    kode_transaksi VARCHAR(15) NOT NULL,
+    kode_produk VARCHAR(15),
     jumlah INT DEFAULT 1,
     harga_satuan DECIMAL(12, 2),
     harga_pokok DECIMAL(12, 2),
@@ -103,6 +102,43 @@ CREATE TABLE IF NOT EXISTS setting (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+CREATE TABLE IF NOT EXISTS landing_hero (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,  
+    subtitle VARCHAR(50) NOT NULL,
+    cta_primary_text VARCHAR(50),
+    cta_primary_url VARCHAR(100),
+    cta_secondary_text VARCHAR(50),
+    cta_secondary_url VARCHAR(100),
+    `text` VARCHAR (100),
+    urutan INT DEFAULT 0,
+    image_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS gallery (
+    id_galery INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS gallery_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_gallery INT NOT NULL,
+    kode_produk VARCHAR(15),   -- relasi ke produk dipindahkan ke sini
+    image_path VARCHAR(255) NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_gallery
+        FOREIGN KEY (gallery_id) REFERENCES gallery(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_gallery_produk
+        FOREIGN KEY (kode_produk) REFERENCES produk(kode_produk)
+        ON DELETE SET NULL
+);
 
 
 -- index

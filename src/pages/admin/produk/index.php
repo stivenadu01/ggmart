@@ -101,5 +101,5 @@ include INCLUDES_PATH . "/admin/layout/header.php";
   </template>
 </div>
 
-<script src="<?= ASSETS_URL . '/js/kelolaProdukPage.js' ?>"></script>
+<script src="<?= ASSETS_URL . '/js/admin/kelolaProdukPage.js' ?>"></script>
 <?php include INCLUDES_PATH . "/admin/layout/footer.php"; ?>

@@ -198,5 +198,5 @@ include INCLUDES_PATH . "admin/layout/header.php";
   </div>
 </div>
 
-<script src="<?= ASSETS_URL ?>/js/laporanPage.js"></script>
+<script src="<?= ASSETS_URL ?>/js/admin/laporanPage.js"></script>
 <?php include INCLUDES_PATH . "admin/layout/footer.php"; ?>
