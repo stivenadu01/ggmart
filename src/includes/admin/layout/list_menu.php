@@ -126,6 +126,18 @@
       x-transition:enter-end="opacity-100">Landing Hero</span>
   </a>
 
+  <a
+    x-cloak x-show="hasRole(['admin'])" :href="baseUrl + '/admin/gallery'"
+    class="btn btn-primary shadow-none gap-2 justify-start" :class="location.pathname.includes('/admin/gallery') ? 'bg-gg-primary/80 text-white' : 'bg-transparent text-neutral-900'" title="Gallery">
+    <span class="h-6 w-6" x-html="icon('gambar')"></span>
+    <span
+      x-cloak
+      :class="sidebarCollapse ? 'block lg:hidden' : 'block'"
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100">Kelola Gallery Foto</span>
+  </a>
+
   <button
     x-cloak
     onclick="logout()"

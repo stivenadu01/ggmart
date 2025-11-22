@@ -117,29 +117,6 @@ CREATE TABLE IF NOT EXISTS landing_hero (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS gallery (
-    id_galery INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(150) NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS gallery_images (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_gallery INT NOT NULL,
-    kode_produk VARCHAR(15),   -- relasi ke produk dipindahkan ke sini
-    image_path VARCHAR(255) NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_gallery
-        FOREIGN KEY (gallery_id) REFERENCES gallery(id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_gallery_produk
-        FOREIGN KEY (kode_produk) REFERENCES produk(kode_produk)
-        ON DELETE SET NULL
-);
-
 
 -- index
 ALTER TABLE produk
