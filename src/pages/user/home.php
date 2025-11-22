@@ -6,65 +6,35 @@ include INCLUDES_PATH . "/user/layout/header.php";
 <div class="flex-1">
 
   <section
-    class="relative w-full h-[22rem] md:h-[32rem] md:py-8 py-4 md:px-20 overflow-hidden block"
+    class="relative w-full overflow-hidden md:px-10"
     x-data="carousel"
     x-init="init()">
 
     <!-- WRAPPER -->
-    <div class="relative w-full h-full">
+    <div class="w-full h-fit relative">
+
+      <!-- SLIDES -->
       <template x-for="(item, index) in hero" :key="index">
-        <!-- SLIDE -->
         <div
-          x-cloak
-          class="absolute inset-0 transition-opacity duration-700"
-          :class="current === index ? 'opacity-100' : 'opacity-0'">
+          x-show="current === index"
+          x-transition.opacity.duration.500ms
+          class="absolute inset-0">
 
-          <div
-            class="absolute inset-0 bg-cover bg-center flex items-center px-6 md:px-20"
-            :style="`background-image: url('${uploadsUrl}${item.image_path}')`">
-
-            <!-- overlay -->
-            <div class="absolute inset-0 bg-black/40"></div>
-
-            <!-- text -->
-            <div class="absolute bottom-10 z-10 text-white max-w-xl space-y-2 md:space-y-4 font-poppins">
-              <h1 class="text-2xl md:text-5xl font-bold" x-text="item.title"></h1>
-              <p class="text-base md:text-lg" x-text="item.subtitle"></p>
-              <p class="text-xs md:text-sm" x-text="item.TEXT"></p>
-              <div class="flex gap-3">
-                <template x-if="item.cta_primary_text">
-                  <a :href="item.cta_primary_url"
-                    class="px-3 py-1 md:px-5 md:py-3 w-fit  bg-gg-primary/90 rounded-lg shadow shadow-gg-primary/50 text-white">
-                    <span x-text="item.cta_primary_text"></span>
-                  </a>
-                </template>
-                <template x-if="item.cta_secondary_text">
-                  <a :href="item.cta_secondary_url"
-                    class="px-5 py-2 w-fit bg-white/90 rounded-lg shadow shadow-white/50 text-slate-900">
-                    <span x-text="item.cta_secondary_text"></span>
-                  </a>
-                </template>
-              </div>
-            </div>
-
-          </div>
+          <img
+            :src="`${uploadsUrl}${item.image_path}`"
+            class="w-full h-full object-cover">
         </div>
-
-
       </template>
-    </div>
 
-    <!-- dots -->
-    <div class="absolute bottom-6 md:bottom-14 left-0 right-0 flex justify-center gap-2 z-10">
-      <template x-for="(_, i) in hero" :key="i">
-        <div
-          class="h-3 rounded-full"
-          @click="goTo(i)"
-          :class="current === i ? 'bg-gg-primary w-8' : 'bg-white/60 w-3'"></div>
-      </template>
+      <!-- LOADING -->
+      <div
+        x-show="loading"
+        class="absolute inset-0 flex items-center justify-center bg-gray-200">
+        <span>Loading...</span>
+      </div>
     </div>
-
   </section>
+
 
 
   <section>

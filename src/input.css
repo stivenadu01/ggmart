@@ -37,13 +37,13 @@
 
 @layer components {
   .menu-item{
-    @apply hover:opacity-75 gap-3 font-light text-base justify-start;
+    @apply hover:opacity-75 gap-2 font-light text-base justify-start;
   }
   img.logo {
     filter: drop-shadow(0 0 0.5px white) drop-shadow(0 0 0.5px white) drop-shadow(0 0 0.5px white);
   }
   .btn {
-    @apply px-4 py-2.5 rounded-lg shadow-md transition-all duration-300;
+    @apply px-4 py-2 rounded-lg shadow-md transition-all duration-300;
   }
 
   .btn-primary {

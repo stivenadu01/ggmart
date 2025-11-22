@@ -60,13 +60,13 @@
     <div @click="sidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50"></div>
 
     <aside class="relative w-64 bg-white shadow-md flex flex-col z-50">
-      <a :href="baseUrl" class="flex items-center justify-between p-2 border-b">
-        <span><img :src="assetsUrl  + '/logo.png'" alt="" class="h-10 inline-block"></span>
+      <div class="flex items-center justify-between p-2 border-b">
+        <a :href="baseUrl"><img :src="assetsUrl  + '/logo.png'" alt="" class="h-10 inline-block"></a>
         <span class="text-gg-primary font-bold">Menu</span>
         <button @click="sidebarOpen = false" class="p-2 rounded hover:bg-gray-100">
           <span class="h-5 w-5" x-html="icon('arrowkiri2')"></span>
         </button>
-      </a>
+      </div>
 
       <!-- MENU -->
       <?php include INCLUDES_PATH . "/admin/layout/list_menu.php" ?>

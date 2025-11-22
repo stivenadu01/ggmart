@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 models('Produk');
 require_once ROOT_PATH . '/config/api_init.php';
+require_once ROOT_PATH . "/helpers/upload.php";
 
 $kode_produk = $_GET['k'] ?? null;
 $res = [];
@@ -77,63 +78,13 @@ switch ($method) {
 
       // Upload dan kompres gambar
       if (!empty($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['gambar'];
-
-        // Validasi ukuran maksimal 5MB
-        if ($file['size'] > 5 * 1024 * 1024) {
-          throw new Exception('Ukuran gambar maksimal 5MB.', 413);
-        }
-
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp'];
-
-        if (!in_array($ext, $allowed_ext)) {
-          throw new Exception('Format gambar tidak didukung (hanya JPG, PNG, WEBP).', 415);
-        }
-
-        $targetDir = ROOT_PATH . '/public/uploads';
-        if (!is_dir($targetDir . "/produk/")) mkdir($targetDir . "/produk/", 0755, true);
-        $filename = "/produk/$new_kode_produk.webp"; // disimpan sebagai webp
-        $targetFile = $targetDir . $filename;
-
-        // Baca gambar sesuai jenisnya
-        if (function_exists('imagecreatefromjpeg') && function_exists('imagewebp') && $file['size'] > 1024 * 1024) {
-          switch ($ext) {
-            case 'jpg':
-            case 'jpeg':
-              $image = imagecreatefromjpeg($file['tmp_name']);
-              break;
-            case 'png':
-              $image = imagecreatefrompng($file['tmp_name']);
-              // hilangkan alpha untuk efisiensi
-              $bg = imagecreatetruecolor(imagesx($image), imagesy($image));
-              $white = imagecolorallocate($bg, 255, 255, 255);
-              imagefill($bg, 0, 0, $white);
-              imagecopy($bg, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
-              imagedestroy($image);
-              $image = $bg;
-              break;
-            case 'webp':
-              $image = imagecreatefromwebp($file['tmp_name']);
-              break;
-            default:
-              throw new Exception('Tipe gambar tidak dikenali.', 415);
-          }
-
-          if (!$image) {
-            throw new Exception('Gagal membaca file gambar.', 500);
-          }
-
-          // Kompres ke WebP (kualitas 85%)
-          if (!imagewebp($image, $targetFile, 85)) {
-            throw new Exception('Gagal mengonversi ke WebP.', 500);
-          }
-
-          imagedestroy($image);
-        } else {
-          move_uploaded_file($file['tmp_name'], $targetFile);
-        }
-        $input_data['gambar'] = $filename;
+        $input_data['gambar'] = uploadImageGeneral(
+          $_FILES['gambar'],
+          "produk",
+          $new_kode_produk,   // nama file
+          5,                  // max size 5MB
+          true                // convert ke WEBP
+        );
       }
 
       if (!tambahProduk($input_data)) {
@@ -156,74 +107,22 @@ switch ($method) {
         throw new Exception('Nama dan Harga wajib diisi.', 422);
       }
 
-      $targetDir = ROOT_PATH . '/public/uploads';
-      if (!is_dir($targetDir)) mkdir($targetDir, 0755, true);
-
       // === Upload & kompres gambar baru jika ada ===
       if (!empty($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['gambar'];
-
-        // Validasi ukuran maksimal 5MB
-        if ($file['size'] > 5 * 1024 * 1024) {
-          throw new Exception('Ukuran gambar maksimal 5MB.', 413);
-        }
-
-        // Validasi ekstensi
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp'];
-        if (!in_array($ext, $allowed_ext)) {
-          throw new Exception('Format gambar tidak didukung (hanya JPG, PNG, WEBP).', 415);
-        }
-
         // Hapus gambar lama jika ada
         $produk_lama = findProduk($kode_produk);
         if (!empty($produk_lama['gambar'])) {
-          $oldPath = $targetDir . $produk_lama['gambar'];
+          $oldPath = ROOT_PATH . '/public/uploads/' . ltrim($produk_lama['gambar'], '/');
           if (file_exists($oldPath)) unlink($oldPath);
         }
 
-        $filename = "/produk/$kode_produk.webp";
-        $targetFile = $targetDir . $filename;
-
-        // Jika GD aktif, resize + konversi + kompres
-        if (function_exists('imagecreatefromjpeg') && function_exists('imagewebp') && $file['size'] > 1024 * 1024) {
-          switch ($ext) {
-            case 'jpg':
-            case 'jpeg':
-              $image = imagecreatefromjpeg($file['tmp_name']);
-              break;
-            case 'png':
-              $image = imagecreatefrompng($file['tmp_name']);
-              // hilangkan alpha untuk efisiensi
-              $bg = imagecreatetruecolor(imagesx($image), imagesy($image));
-              $white = imagecolorallocate($bg, 255, 255, 255);
-              imagefill($bg, 0, 0, $white);
-              imagecopy($bg, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
-              imagedestroy($image);
-              $image = $bg;
-              break;
-            case 'webp':
-              $image = imagecreatefromwebp($file['tmp_name']);
-              break;
-            default:
-              throw new Exception('Tipe gambar tidak dikenali.', 415);
-          }
-
-          if (!$image) {
-            throw new Exception('Gagal membaca file gambar.', 500);
-          }
-
-          // Kompres ke WebP (kualitas 85%)
-          if (!imagewebp($image, $targetFile, 85)) {
-            throw new Exception('Gagal mengonversi ke WebP.', 500);
-          }
-
-          imagedestroy($image);
-        } else {
-          // Jika GD tidak tersedia atau file < 1MB, simpan apa adanya
-          move_uploaded_file($file['tmp_name'], $targetFile);
-        }
-        $input_data['gambar'] = $filename;
+        $input_data['gambar'] = uploadImageGeneral(
+          $_FILES['gambar'],
+          "produk",
+          $kode_produk,
+          5,
+          true
+        );
       }
 
       // Jalankan update produk
@@ -247,7 +146,7 @@ switch ($method) {
       $produk_lama = findProduk($kode_produk);
       if ($produk_lama['stok'] != 0) throw new Exception("Stok produk masih tersedia, Silahkan kurangi dulu", 400);
       if ($produk_lama && !empty($produk_lama['gambar'])) {
-        $path = ROOT_PATH . '/public/uploads' . $produk_lama['gambar'];
+        $path = ROOT_PATH . '/public/uploads/' . ltrim($produk_lama['gambar'], '/');
         if (file_exists($path)) unlink($path);
       }
       if (!hapusProduk($kode_produk)) {
