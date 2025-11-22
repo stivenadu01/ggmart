@@ -2265,6 +2265,11 @@ img.logo {
   letter-spacing: 0.05em;
 }
 
+.\!text-red-400 {
+  --tw-text-opacity: 1 !important;
+  color: rgb(248 113 113 / var(--tw-text-opacity, 1)) !important;
+}
+
 .\!text-white {
   --tw-text-opacity: 1 !important;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
@@ -2380,11 +2385,6 @@ img.logo {
   color: rgb(23 23 23 / var(--tw-text-opacity, 1));
 }
 
-.text-red-400 {
-  --tw-text-opacity: 1;
-  color: rgb(248 113 113 / var(--tw-text-opacity, 1));
-}
-
 .text-red-500 {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity, 1));
@@ -2422,11 +2422,6 @@ img.logo {
 .text-yellow-600 {
   --tw-text-opacity: 1;
   color: rgb(202 138 4 / var(--tw-text-opacity, 1));
-}
-
-.\!text-red-400 {
-  --tw-text-opacity: 1 !important;
-  color: rgb(248 113 113 / var(--tw-text-opacity, 1)) !important;
 }
 
 .placeholder-gray-400::-moz-placeholder {
