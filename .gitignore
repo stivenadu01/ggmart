@@ -1,0 +1,9 @@
+/vendor
+/node_modules
+.env
+/storage/backups/
+/storage/bukti/
+/storage/seed-receipt.json
+/storage/*-check-*
+/storage/*-receipt.json
+/storage/ui-*.jsonl

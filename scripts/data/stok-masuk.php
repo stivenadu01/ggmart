@@ -1,0 +1,60 @@
+<?php
+// Rencana penerimaan: jumlah dalam satuan jual produk dan HPP per satuan.
+// HPP adalah perkiraan untuk data contoh, bukan harga dari nota pemasok.
+return [
+  'PRD_58480927407'=>[24,12500], // Tepung Mokaf Original
+  'PRD_00016875477'=>[12,48500], // CNC Cookies Nastar
+  'PRD_00877921510'=>[12,33500], // CNC Cookies Sagu Keju
+  'PRD_96761227467'=>[24,11000], // Cokelat Kelor-S
+  'PRD_03566984797'=>[40,7200], // Jagung Pulut Pedas
+  'PRD_97964235986'=>[30,9500], // Kacang Telur
+  'PRD_02053183769'=>[12,32000], // Kue Coklat Spekuk
+  'PRD_18639457606'=>[144,350], // Aguamor, tiga karton gelas
+  'PRD_20715061932'=>[48,2400], // Aqua 330 ml
+  'PRD_90212598279'=>[48,3600], // Aqua 600 ml
+  'PRD_08361677758'=>[24,9900], // Bear Brand 189 ml
+  'PRD_12761562947'=>[24,7000], // Buavita 245 ml
+  'PRD_15650276204'=>[40,2200], // Chocolatos Drink
+  'PRD_02638121216'=>[24,5600], // Coca Cola 330 ml
+  'PRD_11779732260'=>[20,4100], // Dancow Coklat
+  'PRD_17324769388'=>[20,4100], // Dancow Putih
+  'PRD_18129502243'=>[30,2300], // Energen Coklat
+  'PRD_18617013290'=>[30,2300], // Energen Vanila
+  'PRD_25312761177'=>[24,5500], // Fanta 330 ml
+  'PRD_14080726422'=>[48,3800], // Floridina Jeruk 350 ml
+  'PRD_08959734393'=>[24,5200], // Fruit Tea Blackcurrant
+  'PRD_09433004187'=>[24,5200], // Fruit Tea Stroberi
+  'PRD_14954711260'=>[24,4300], // Golda Coffee
+  'PRD_16805975959'=>[40,2500], // Good Day sachet
+  'PRD_13699127602'=>[24,6000], // Good Day 250 ml
+  'PRD_19493878708'=>[50,1800], // Kapal Api sachet
+  'PRD_60274096744'=>[12,47000], // Kopi Amfoang
+  'PRD_40477704712'=>[15,43500], // Kopi Meto
+  'PRD_06662692105'=>[10,58000], // Minuman Perjamuan
+  'PRD_13359265350'=>[24,4200], // Nipis Madu 330 ml
+  'PRD_27131014176'=>[24,6200], // Pocari Sweat 350 ml
+  'PRD_27464033182'=>[24,7200], // Pocari Sweat 500 ml
+  'PRD_07639457476'=>[24,5500], // Pulpy Orange
+  'PRD_23765443715'=>[24,4800], // Sari Kacang Hijau
+  'PRD_25863427374'=>[24,5600], // Sprite 330 ml
+  'PRD_12267226394'=>[24,5300], // Teh Botol Sosro
+  'PRD_23259949343'=>[24,3900], // Teh Kotak
+  'PRD_21948382265'=>[48,3600], // Teh Pucuk
+  'PRD_20037601647'=>[40,1700], // Top Coffee Gula Aren
+  'PRD_18974646805'=>[50,1400], // Top Coffee Susu
+  'PRD_20669949571'=>[40,1750], // Top White Coffee
+  'PRD_24254357879'=>[24,8200], // You C 1000
+  'PRD_66878007736'=>[30,8000], // Gula Lempeng Rote
+  'PRD_65671504693'=>[20,24500], // Gula Lempeng Tuamese 1 kg
+  'PRD_09992327462'=>[20,16500], // Gula Sabu Putih
+  'PRD_10996118655'=>[12,31000], // Madu Batu
+  'PRD_11650264519'=>[15,29500], // Madu Pohon
+  'PRD_07627479596'=>[18,26000], // Minyak Kayu Putih Tuamese
+  'PRD_05304045813'=>[18,22500], // Minyak Kemiri
+  'PRD_70956539291'=>[10,38000], // Nu Koennu Minyak Herbal
+  'PRD_56095135699'=>[24,12000], // Garam Yodium Oebelo
+  'PRD_55071163152'=>[30,7800], // Gula Semut
+  'PRD_61762411140'=>[24,20500], // Kecap Manis Sedaap 550 ml
+  'PRD_13763803432'=>[20,15000], // Kunyit Asam Instan
+  'PRD_34331235266'=>[24,14500], // Kunyit Instan
+];

@@ -1,0 +1,12 @@
+GGmart - perubahan pembayaran QRIS
+
+Perubahan:
+- QRIS menggunakan gambar tetap `public/assets/qris_ggmart.jpeg`.
+- Integrasi gateway Midtrans dihapus dari kode aplikasi, endpoint, polling/status, webhook, rekonsiliasi, dan konfigurasi `.env.example`.
+- QRIS dan transfer manual menggunakan alur bukti pembayaran: unggah bukti -> status `menunggu_verifikasi` -> admin memverifikasi -> pesanan diproses setelah diterima.
+- Batas waktu pembayaran tetap 120 menit, tidak lagi dikonfigurasi lewat environment variable.
+
+Catatan:
+- Kolom gateway lama di database yang sudah ada tidak dibaca lagi oleh aplikasi. Kolom lama dipertahankan pada dump SQL untuk kompatibilitas data instalasi lama.
+- Pastikan file QRIS tersedia pada `public/assets/qris_ggmart.jpeg`.
+- Jalankan pengujian checkout dan kasir pada lingkungan lokal sebelum deploy produksi.

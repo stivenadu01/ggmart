@@ -1,0 +1,18 @@
+{
+    "tabel_pencatatan_aktif": "riwayat_pesanan",
+    "arsip_pembayaran_masih_ada": false,
+    "catatan_lama_terverifikasi": null,
+    "riwayat_per_kategori": [
+        {
+            "kategori": "pesanan",
+            "jumlah": 56
+        },
+        {
+            "kategori": "pembayaran",
+            "jumlah": 29
+        }
+    ],
+    "mutasi_stok_total": 84,
+    "jumlah_halaman_stok": 9,
+    "paginasi_tanpa_duplikasi": true
+}
