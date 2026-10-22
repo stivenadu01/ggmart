@@ -67,11 +67,11 @@ class ApiTransaksiController
           if ($trx['status']!=='diproses' || ($trx['status_bayar']!=='lunas' && !$cashPickup) || $trx['sumber_transaksi']!=='online') throw new Exception('Pesanan belum dapat disiapkan atau dikirim.',409);
           if ($action==='kirim') {
             if ($trx['metode_pengiriman']!=='kirim') throw new Exception('Pesanan ini diambil di tempat.',409);
-            oq("UPDATE transaksi SET status='dikirim',tanggal_kirim=NOW() WHERE kode_transaksi=?",[$code]);
+            oq("UPDATE transaksi SET status='dikirim' WHERE kode_transaksi=?",[$code]); oq("UPDATE pengiriman SET tanggal_kirim=NOW() WHERE kode_transaksi=?",[$code]);
             recordOrderEvent($code,'dikirim','Barang diserahkan kepada pengantar.',(int)$_SESSION['user']['id_pengguna']);
           } else {
             if ($trx['metode_pengiriman']!=='ambil') throw new Exception('Pesanan ini menggunakan pengiriman.',409);
-            oq('UPDATE transaksi SET siap_diambil=1 WHERE kode_transaksi=?',[$code]);
+            oq('UPDATE pengiriman SET siap_diambil=1 WHERE kode_transaksi=?',[$code]);
             if (!(int)$trx['siap_diambil']) recordOrderEvent($code,'siap_diambil','Pesanan siap diambil di GGmart.',(int)$_SESSION['user']['id_pengguna']);
           }
         } elseif ($action==='selesai') completeOrder($code);
@@ -90,7 +90,7 @@ class ApiTransaksiController
   public function pesanan_kasir()
   {
     try {
-      $rows=oq("SELECT kode_transaksi,nama_penerima,metode_bayar,status_bayar,status,metode_pengiriman,siap_diambil,total_tagihan,tanggal_transaksi FROM transaksi WHERE sumber_transaksi='online' AND status IN ('pending','diproses','dikirim') ORDER BY tanggal_transaksi DESC LIMIT 50")->fetch_all(MYSQLI_ASSOC);
+      $rows=oq("SELECT t.kode_transaksi,p.nama_penerima,t.metode_bayar,t.status_bayar,t.status,p.metode_pengiriman,p.siap_diambil,t.total_tagihan,t.tanggal_transaksi FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi WHERE t.sumber_transaksi='online' AND t.status IN ('pending','diproses','dikirim') ORDER BY t.tanggal_transaksi DESC LIMIT 50")->fetch_all(MYSQLI_ASSOC);
       response(['success'=>true,'data'=>$rows]);
     } catch (Throwable $e) { orderError($e); }
   }

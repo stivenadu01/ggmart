@@ -3,7 +3,7 @@
 function oq(string $sql, array $params = []) { return db()->execute_query($sql, $params); }
 function orderRow(string $code, bool $lock = false): ?array
 {
-  return oq('SELECT t.*, u.nama AS user, u.role AS user_role, u.no_hp AS user_phone FROM transaksi t LEFT JOIN pengguna u ON u.id_pengguna=t.id_pengguna WHERE t.kode_transaksi=?' . ($lock ? ' FOR UPDATE' : ''), [$code])->fetch_assoc();
+  return oq('SELECT t.*, p.metode_pengiriman,p.kelurahan,p.nama_penerima,p.no_hp_penerima,p.alamat_pengiriman,p.ongkir,p.kecamatan,p.siap_diambil,p.tanggal_kirim, u.nama AS user, u.role AS user_role, u.no_hp AS user_phone FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi LEFT JOIN pengguna u ON u.id_pengguna=t.id_pengguna WHERE t.kode_transaksi=?' . ($lock ? ' FOR UPDATE' : ''), [$code])->fetch_assoc();
 }
 function orderError(Throwable $e): void
 {
@@ -154,8 +154,8 @@ function createOrder(array $input, array $user, bool $cashier = false): string
     $code='GG-' . strtoupper(bin2hex(random_bytes(6)));
     $minutes=120;
     $expiry=date('Y-m-d H:i:s',time()+$minutes*60);
-    oq("INSERT INTO transaksi(kode_transaksi,id_pengguna,total_harga,total_pokok,status,metode_bayar,status_bayar,metode_pengiriman,kelurahan,nama_penerima,no_hp_penerima,alamat_pengiriman,ongkir,total_tagihan,batas_bayar,checkout_key) VALUES (?,?,?,0,'pending',?,'belum_bayar',?,?,?,?,?,?,?,?,?)",[$code,$user['id_pengguna'],$subtotal,$method,$delivery,$district,$name,$phone,$address,$shipping,$subtotal+$shipping,$expiry,$key]);
-    oq('UPDATE transaksi SET sumber_transaksi=?,kecamatan=? WHERE kode_transaksi=?',[$cashier ? 'kasir' : 'online',$subdistrict,$code]);
+    oq("INSERT INTO transaksi(kode_transaksi,id_pengguna,total_harga,total_pokok,status,metode_bayar,status_bayar,total_tagihan,batas_bayar,checkout_key,sumber_transaksi) VALUES (?,?,?,0,'pending',?,'belum_bayar',?,?,?,?)",[$code,$user['id_pengguna'],$subtotal,$method,$subtotal+$shipping,$expiry,$key,$cashier ? 'kasir' : 'online']);
+    oq("INSERT INTO pengiriman(kode_transaksi,metode_pengiriman,kelurahan,nama_penerima,no_hp_penerima,alamat_pengiriman,ongkir,kecamatan) VALUES (?,?,?,?,?,?,?,?)",[$code,$delivery,$district,$name,$phone,$address,$shipping,$subdistrict]);
     foreach ($details as [$product,$qty,$price]) {
       oq('INSERT INTO detail_transaksi(kode_transaksi,kode_produk,jumlah,harga_satuan,harga_pokok) VALUES (?,?,?,?,0)',[$code,$product,$qty,$price]);
       oq('INSERT INTO reservasi_stok(kode_transaksi,kode_produk,jumlah) VALUES (?,?,?)',[$code,$product,$qty]);

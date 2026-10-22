@@ -389,7 +389,7 @@ class ApiLaporanController
     applyStyle($shippingSheet,'A5:G5',['bold','border','center']);
     $periodValue=$tipe==='harian' ? $tanggal : ($tipe==='bulanan' ? $bulan : $tahun);
     $filter=$tipe==='harian' ? 'DATE(tanggal_transaksi)=DATE(?)' : ($tipe==='bulanan' ? "DATE_FORMAT(tanggal_transaksi,'%Y-%m')=?" : 'YEAR(tanggal_transaksi)=?');
-    $sql="SELECT kode_transaksi,tanggal_transaksi,metode_bayar,metode_pengiriman,kelurahan,ongkir,total_tagihan FROM transaksi WHERE status='selesai' AND $filter";
+    $sql="SELECT t.kode_transaksi,t.tanggal_transaksi,t.metode_bayar,p.metode_pengiriman,p.kelurahan,p.ongkir,t.total_tagihan FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi WHERE t.status='selesai' AND $filter";
     $parameters=[$periodValue];
     if ($metode!=='') { $sql.=' AND metode_bayar=?'; $parameters[]=$metode; }
     $shippingRows=oq($sql . ' ORDER BY tanggal_transaksi,kode_transaksi',$parameters)->fetch_all(MYSQLI_ASSOC);
