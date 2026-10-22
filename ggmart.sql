@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 12 Okt 2026 pada 20.15
+-- Waktu pembuatan: 22 Okt 2026 pada 12.47
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -120,7 +120,11 @@ INSERT INTO `detail_transaksi` (`id_detail`, `kode_transaksi`, `kode_produk`, `j
 (173, 'GG-5805602CC18C', 'PRD_60274096744', 1, 60000.00, 0.00),
 (174, 'GG-968560FAED70', 'PRD_09992327462', 1, 21000.00, 0.00),
 (175, 'GG-968560FAED70', 'PRD_11650264519', 1, 40000.00, 0.00),
-(176, 'GG-968560FAED70', 'PRD_66878007736', 1, 10000.00, 0.00);
+(176, 'GG-968560FAED70', 'PRD_66878007736', 1, 10000.00, 0.00),
+(191, 'GG-5F171FEFB609', 'PRD_60274096744', 1, 60000.00, 0.00),
+(192, 'GG-888D78932E21', 'PRD_00877921510', 1, 45000.00, 0.00),
+(193, 'GG-888D78932E21', 'PRD_96761227467', 1, 15000.00, 0.00),
+(194, 'GG-38795E5C8405', 'PRD_03566984797', 1, 10000.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -160,6 +164,15 @@ CREATE TABLE `keranjang` (
   `kode_produk` varchar(15) DEFAULT NULL,
   `jumlah` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `keranjang`
+--
+
+INSERT INTO `keranjang` (`id_keranjang`, `id_pengguna`, `kode_produk`, `jumlah`) VALUES
+(253, 24, 'PRD_02053183769', 2),
+(254, 24, 'PRD_03566984797', 1),
+(255, 24, 'PRD_34331235266', 1);
 
 -- --------------------------------------------------------
 
@@ -289,6 +302,23 @@ CREATE TABLE `notifikasi` (
   `tanggal` datetime(6) NOT NULL DEFAULT current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `notifikasi`
+--
+
+INSERT INTO `notifikasi` (`id`, `id_riwayat`, `id_pengguna`, `peran`, `jenis`, `judul`, `pesan`, `tautan`, `popup`, `dibaca_pada`, `tanggal`) VALUES
+(218, 528, 24, 'pelanggan', 'pembayaran_lunas', 'Pembayaran diterima, pesanan diproses', 'GG-968560FAED70. Pembayaran terkonfirmasi. Pesanan mulai disiapkan.', '/pembayaran/GG-968560FAED70', 1, '2026-10-13 02:32:40', '2026-10-13 02:31:37.151130'),
+(219, 528, 1, 'admin', 'pembayaran_lunas', 'Pembayaran telah diterima', 'GG-968560FAED70 · Pengiriman lokal. Pesanan mulai disiapkan.', '/admin/transaksi/GG-968560FAED70', 0, '2026-10-13 02:31:44', '2026-10-13 02:31:37.157934'),
+(220, 530, 24, 'pelanggan', 'dikirim', 'Pesanan sedang dikirim', 'GG-968560FAED70. Pesanan sudah diserahkan kepada pengantar.', '/pembayaran/GG-968560FAED70', 1, '2026-10-13 02:32:45', '2026-10-13 02:31:58.995560'),
+(221, 531, 24, 'pelanggan', 'checkout', 'Pesanan dibuat', 'GG-5F171FEFB609 · Ambil di toko. Pantau pesanan Anda di sini.', '/pembayaran/GG-5F171FEFB609', 0, '2026-10-19 18:35:49', '2026-10-19 18:25:06.588418'),
+(222, 531, 1, 'admin', 'checkout', 'Pesanan baru masuk', 'GG-5F171FEFB609 · Ambil di toko · QRIS.', '/admin/transaksi/GG-5F171FEFB609', 1, NULL, '2026-10-19 18:25:06.589536'),
+(223, 532, 24, 'pelanggan', 'checkout', 'Pesanan dibuat', 'GG-888D78932E21 · Ambil di toko. Pantau pesanan Anda di sini.', '/pembayaran/GG-888D78932E21', 0, '2026-10-19 20:17:19', '2026-10-19 20:16:32.552419'),
+(224, 532, 1, 'admin', 'checkout', 'Pesanan baru masuk', 'GG-888D78932E21 · Ambil di toko · QRIS.', '/admin/transaksi/GG-888D78932E21', 1, NULL, '2026-10-19 20:16:32.552995'),
+(225, 533, 24, 'pelanggan', 'pembayaran_menunggu_verifikasi', 'Menunggu verifikasi pembayaran', 'GG-888D78932E21. Bukti transfer sudah diterima dan akan diperiksa admin.', '/pembayaran/GG-888D78932E21', 0, '2026-10-19 20:17:17', '2026-10-19 20:16:41.300530'),
+(226, 533, 1, 'admin', 'pembayaran_menunggu_verifikasi', 'Bukti transfer perlu diverifikasi', 'GG-888D78932E21. Periksa bukti transfer sebelum menerima pembayaran.', '/admin/transaksi/GG-888D78932E21', 1, NULL, '2026-10-19 20:16:41.300836'),
+(227, 534, 24, 'pelanggan', 'pembayaran_menunggu_verifikasi', 'Menunggu verifikasi pembayaran', 'GG-5F171FEFB609. Bukti transfer sudah diterima dan akan diperiksa admin.', '/pembayaran/GG-5F171FEFB609', 0, '2026-10-19 20:17:15', '2026-10-19 20:16:57.189636'),
+(228, 534, 1, 'admin', 'pembayaran_menunggu_verifikasi', 'Bukti transfer perlu diverifikasi', 'GG-5F171FEFB609. Periksa bukti transfer sebelum menerima pembayaran.', '/admin/transaksi/GG-5F171FEFB609', 1, NULL, '2026-10-19 20:16:57.190447');
+
 -- --------------------------------------------------------
 
 --
@@ -317,9 +347,9 @@ CREATE TABLE `pengaturan` (
 --
 
 INSERT INTO `pengaturan` (`nama`, `nilai`) VALUES
-('bank_nama', 'BRI'),
-('bank_pemilik', 'STIVEN MELKIANUS ADU'),
-('bank_rekening', '003901139474509');
+('bank_nama', 'BANK NTT'),
+('bank_pemilik', 'Toko Pangan GG Mart'),
+('bank_rekening', '2511435978');
 
 -- --------------------------------------------------------
 
@@ -348,11 +378,11 @@ CREATE TABLE `pengguna` (
 --
 
 INSERT INTO `pengguna` (`id_pengguna`, `nama`, `email`, `no_hp`, `alamat`, `password`, `role`, `tanggal_dibuat`, `is_verified`, `verify_token`, `token_expired`, `reset_token`, `reset_expired`) VALUES
-(1, 'admin', 'admin@gmail.com', '081338609228', 'Jln Nasution II, Kayu Puith, Kupang NTT', '$2y$10$.XpEs.z7h5xt68V8cua9o.c6iu5fBbfZvd6giRTExPT6GWS7.5zlS', 'admin', '2025-10-21 20:01:46', 1, NULL, '2026-05-22 15:58:20', NULL, NULL),
-(12, 'pimpinan', 'pimpinan@gmail.com', '081338609228', 'Jln A.H Nasution 3', '$2y$10$Qb6CXUHFwA2DcPTKb7bq9OeEjZUpLbTdlVxLjd.9.wfWRknXv4bzq', 'pimpinan', '2026-06-01 23:07:02', 1, NULL, '2026-06-02 23:07:02', NULL, NULL),
-(22, 'pelanggan', 'pelanggan@gmail.com', '085829230787', 'Jl Perintis Kemerdekaan 1', '$2y$10$SoOgXtN1GUDpg5szQJmT.OM97MleZeG8ZgsKIx78vHU33or.bxiqu', 'pelanggan', '2026-08-21 23:39:59', 1, NULL, NULL, NULL, NULL),
+(1, 'Pdt. Jevry Giri', 'admin@gmail.com', '+6285239285110', '', '$2y$10$.XpEs.z7h5xt68V8cua9o.c6iu5fBbfZvd6giRTExPT6GWS7.5zlS', 'admin', '2025-10-21 20:01:46', 1, NULL, '2026-05-22 15:58:20', NULL, NULL),
+(12, 'Pdt. Nova Frihastuty', 'pimpinan@gmail.com', '+6281243156514', '', '$2y$10$Qb6CXUHFwA2DcPTKb7bq9OeEjZUpLbTdlVxLjd.9.wfWRknXv4bzq', 'pimpinan', '2026-06-01 23:07:02', 1, NULL, '2026-06-02 23:07:02', NULL, NULL),
+(22, 'pelanggan', 'pelanggan@gmail.com', '085829230787', '', '$2y$10$SoOgXtN1GUDpg5szQJmT.OM97MleZeG8ZgsKIx78vHU33or.bxiqu', 'pelanggan', '2026-08-21 23:39:59', 1, NULL, NULL, NULL, NULL),
 (23, 'kasir', 'kasir@gmail.com', '085000000000', NULL, '$2y$10$qa.LLO4k79KSjBR8nCmaU.sG/qTETrxYsXZSzbYpNviDdcoOutGCy', 'kasir', '2026-08-31 22:43:52', 1, '6dfccd52c5e1be32a179e654d6da7d55006e6cdaf0c12349f8d6c5dddc050932', '2026-09-01 22:43:52', NULL, NULL),
-(24, 'Stiven Melkianus Adu', 'stivenadu01@gmail.com', '+6281000000000', NULL, '$2y$10$NTerGumVRfrUB3/XLyzpie2xVSVxYMvDCob.S.wpG2rg2IwhOIKD2', 'pelanggan', '2026-10-13 00:57:35', 1, NULL, '2026-10-14 00:57:35', NULL, NULL);
+(24, 'Stiven Melkianus Adu', 'stivenadu01@gmail.com', '+6281338609228', NULL, '$2y$10$NTerGumVRfrUB3/XLyzpie2xVSVxYMvDCob.S.wpG2rg2IwhOIKD2', 'pelanggan', '2026-10-13 00:57:35', 1, NULL, '2026-10-14 00:57:35', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -381,10 +411,10 @@ CREATE TABLE `produk` (
 
 INSERT INTO `produk` (`kode_produk`, `id_kategori`, `nama_produk`, `harga_jual`, `deskripsi`, `satuan_dasar`, `gambar`, `asal_produk`, `tagline`, `stok`, `terjual`, `tanggal_dibuat`) VALUES
 ('PRD_00016875477', 80, 'CNC COOKIES NASTAR', 65000.00, '', 'Toples', '/produk/PRD_00016875477.png', 'CNC COOKIES, PENFUI KUPANG NTT', 'Nastar CNC renyah, rasa kelapa asli Kupang.', 36, 6, '2025-12-19 12:53:23'),
-('PRD_00877921510', 80, 'CNC COOKIES SAGU KEJU', 45000.00, '', 'Toples', '/produk/PRD_00877921510.png', 'CNC COOKIES, PENFUI KUPANG NTT', 'Rasa gurih keju dengan sentuhan sagu alami, langsung dari Kupang.', 29, 13, '2025-12-19 12:54:49'),
+('PRD_00877921510', 80, 'CNC COOKIES SAGU KEJU', 45000.00, '', 'Toples', '/produk/PRD_00877921510.png', 'CNC COOKIES, PENFUI KUPANG NTT', 'Rasa gurih keju dengan sentuhan sagu alami, langsung dari Kupang.', 28, 13, '2025-12-19 12:54:49'),
 ('PRD_02053183769', 80, 'Kue Coklat Spekuk CNC COOKIES', 45000.00, '', 'Toples', '/produk/PRD_02053183769.png', 'CNC COOKIES, PENFUI KUPANG NTT', 'Spekuk coklat renyah, rasa asli Kupang, cocok ngemil santai.', 26, 16, '2025-12-19 12:56:47'),
 ('PRD_02638121216', 78, 'Coca Cola 330 ML', 7000.00, '', 'Kaleng', '/produk/PRD_02638121216.webp', '', NULL, 24, 0, '2025-12-28 14:17:18'),
-('PRD_03566984797', 80, 'Jagung Pulut Pedas', 10000.00, 'Nikmati kelezatan camilan autentik khas Nusa Tenggara Timur dengan Jagung Pulut Pedas. Terbuat dari jagung pulut (jagung ketan) pilihan yang terkenal dengan teksturnya yang unik—lebih empuk, padat, dan sedikit kenyal saat dikunyah, sangat berbeda dari jagung biasa.', 'Pcs', '/produk/PRD_03566984797.png', 'Klasis Kota Kupang Barat', 'Jagung pulut pedas, empuk kenyal, cita rasa khas NTT.', 40, 0, '2025-12-19 12:59:18'),
+('PRD_03566984797', 80, 'Jagung Pulut Pedas', 10000.00, 'Nikmati kelezatan camilan autentik khas Nusa Tenggara Timur dengan Jagung Pulut Pedas. Terbuat dari jagung pulut (jagung ketan) pilihan yang terkenal dengan teksturnya yang unik—lebih empuk, padat, dan sedikit kenyal saat dikunyah, sangat berbeda dari jagung biasa.', 'Pcs', '/produk/PRD_03566984797.png', 'Klasis Kota Kupang Barat', 'Jagung pulut pedas, empuk kenyal, cita rasa khas NTT.', 39, 0, '2025-12-19 12:59:18'),
 ('PRD_05304045813', 79, 'Minyak Kemiri', 30000.00, '', 'Botol', '/produk/PRD_05304045813.png', 'Pemuda Amanuban Tengah Selatan', 'Minyak kemiri Pemuda Amanuban, wangi alami, cocok untuk masak sehari-hari.', 18, 0, '2025-12-19 13:02:12'),
 ('PRD_06662692105', 78, 'Minuman Perjamuan Perjanjian Baru', 75000.00, '', 'Botol', '/produk/PRD_06662692105.png', 'SINODE GMIT', 'Minuman Perjamuan Perjanjian baru, dari SINODE GMIT.', 10, 0, '2025-12-19 13:04:28'),
 ('PRD_07627479596', 79, 'Minyak Kayu Putih Tuamese', 35000.00, '', 'Botol', '/produk/PRD_07627479596.png', 'GMIT EBENHAEZER TUAMESE', 'Minyak kayu putih Tuamese, wangi alami, segar dari Kupang.', 18, 0, '2025-12-19 13:06:04'),
@@ -427,13 +457,13 @@ INSERT INTO `produk` (`kode_produk`, `id_kategori`, `nama_produk`, `harga_jual`,
 ('PRD_55071163152', 77, 'Gula Semut', 10000.00, '', 'Pcs', '/produk/PRD_55071163152.png', 'Imanuel Rote Barat Laut', 'Manis alami gula semut Imanuel, rasa otentik Rote.', 30, 0, '2025-12-19 14:25:09'),
 ('PRD_56095135699', 77, 'Garam Yodium Oebelo Tanah Merah', 15000.00, '', 'Bakun', '/produk/PRD_56095135699.png', 'Klasis Kupang Tengah', 'Garam Yodium Oebelo, rasa alami dari Tanah Merah Kupang.', 24, 0, '2025-12-19 14:26:51'),
 ('PRD_58480927407', 76, 'Tepung Mokaf Original', 15000.00, '', 'Pcs', '/produk/PRD_58480927407.png', 'Jemaat Sopo, Klasis Amanuban Tengah Uatar', 'Tepung Mokaf asli Sopo, tekstur halus, rasa otentik.', 24, 0, '2025-12-19 14:30:50'),
-('PRD_60274096744', 78, 'Kopi Amfoang', 60000.00, '', 'Pcs', '/produk/PRD_60274096744.png', 'Istana Hijau Lelogama', 'Kopi Amfoang dari Istana Hijau, rasa alami yang memikat.', 11, 0, '2025-12-19 14:33:49'),
+('PRD_60274096744', 78, 'Kopi Amfoang', 60000.00, '', 'Pcs', '/produk/PRD_60274096744.png', 'Istana Hijau Lelogama', 'Kopi Amfoang dari Istana Hijau, rasa alami yang memikat.', 10, 0, '2025-12-19 14:33:49'),
 ('PRD_61762411140', 77, 'Kecap Manis Sedaap 550 ML', 25000.00, 'Kecap manis kedelai hitam Special dalam kemasan isi ulang 550 ml. Dijual per pouch.', 'Pouch', '/produk/PRD_61762411140.png', '', NULL, 24, 0, '2025-12-19 14:36:18'),
 ('PRD_65671504693', 79, 'Gula Lempeng Tuamese 1KG', 30000.00, '', 'Pcs', '/produk/PRD_65671504693.png', '-', 'Gula lempeng Tuamese, manis pas, serbaguna untuk masak.', 20, 0, '2025-12-19 14:42:49'),
 ('PRD_66878007736', 79, 'Gula Lempeng Rote', 10000.00, '', 'Pcs', '/produk/PRD_66878007736.png', 'Imanuel Ndau / RBL', 'Manis alami Gula Lempeng Rote, rasa khas pulau sejuk.', 29, 0, '2025-12-19 14:44:49'),
 ('PRD_70956539291', 79, 'Nu Koennu Minyak Herbal', 50000.00, '...', 'Botol', '/produk/PRD_70956539291.png', 'Napago Farm Kupang, NTT', 'Minyak herbal Napago Farm, alami, menenangkan tubuh secara lembut.', 10, 0, '2025-12-19 14:51:37'),
 ('PRD_90212598279', 78, 'Aqua 600 ML', 5000.00, '', 'Botol', '/produk/PRD_90212598279.webp', '', NULL, 48, 0, '2025-12-28 14:08:45'),
-('PRD_96761227467', 80, 'Cokelat KELOR-S', 15000.00, '', 'Pcs', '/produk/PRD_96761227467.png', 'Niki Niki Amanuban Tengah, TTS', 'Rasa alami khas Niki niki Amanuban Tengah.', 24, 0, '2025-12-19 12:47:58'),
+('PRD_96761227467', 80, 'Cokelat KELOR-S', 15000.00, '', 'Pcs', '/produk/PRD_96761227467.png', 'Niki Niki Amanuban Tengah, TTS', 'Rasa alami khas Niki niki Amanuban Tengah.', 23, 0, '2025-12-19 12:47:58'),
 ('PRD_97964235986', 80, 'Kacang Telur', 12500.00, '', 'Pcs', '/produk/PRD_97964235986.png', 'HomeMade Moms, Penfui Kupang NTT', 'Kacang telur Homemade Moms, gurih alami rasa tradisional Kupang.', 30, 0, '2025-12-19 12:49:58');
 
 -- --------------------------------------------------------
@@ -453,7 +483,11 @@ CREATE TABLE `reservasi_stok` (
 --
 
 INSERT INTO `reservasi_stok` (`kode_transaksi`, `kode_produk`, `jumlah`) VALUES
+('GG-38795E5C8405', 'PRD_03566984797', 1),
 ('GG-5805602CC18C', 'PRD_60274096744', 1),
+('GG-5F171FEFB609', 'PRD_60274096744', 1),
+('GG-888D78932E21', 'PRD_00877921510', 1),
+('GG-888D78932E21', 'PRD_96761227467', 1),
 ('GG-968560FAED70', 'PRD_09992327462', 1),
 ('GG-968560FAED70', 'PRD_11650264519', 1),
 ('GG-968560FAED70', 'PRD_66878007736', 1);
@@ -496,26 +530,26 @@ INSERT INTO `riwayat_pesanan` (`id`, `kode_transaksi`, `kategori`, `peristiwa`, 
 (13, 'GG-7CDDC6D37F3E', 'pesanan', 'dibatalkan', 'belum_bayar', 'Pesanan dibatalkan.', 22, 'pembayaran:31', '2026-10-12 19:09:16'),
 (14, 'GG-BC4714506D05', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:41', '2026-10-12 19:38:30'),
 (15, 'GG-88BDD71C994D', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:42', '2026-10-12 19:40:09'),
-(16, 'GG-88BDD71C994D', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS diterima dan diverifikasi admin.', NULL, 'pembayaran:43', '2026-10-12 19:41:42'),
+(16, 'GG-88BDD71C994D', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS dikonfirmasi Midtrans.', NULL, 'pembayaran:43', '2026-10-12 19:41:42'),
 (17, 'GG-BC4714506D05', 'pembayaran', 'pembayaran_kedaluwarsa', 'kedaluwarsa', 'Pembayaran QRIS berakhir: cancel', NULL, 'pembayaran:44', '2026-10-12 19:44:30'),
 (18, 'GG-9D68EBB6D777', 'pembayaran', 'pembayaran_kedaluwarsa', 'kedaluwarsa', 'Pembayaran QRIS berakhir: cancel', NULL, 'pembayaran:45', '2026-10-12 19:44:38'),
 (19, 'GG-5000AB552B3B', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:46', '2026-10-12 19:44:43'),
 (20, 'GG-5000AB552B3B', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran tunai diterima.', 1, 'pembayaran:47', '2026-10-12 19:44:43'),
 (21, 'GG-3B6DBC7919F6', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:48', '2026-10-12 19:45:00'),
-(22, 'GG-3B6DBC7919F6', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS diterima dan diverifikasi admin.', NULL, 'pembayaran:49', '2026-10-12 19:45:20'),
+(22, 'GG-3B6DBC7919F6', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS dikonfirmasi Midtrans.', NULL, 'pembayaran:49', '2026-10-12 19:45:20'),
 (23, 'GG-C673285D062A', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:63', '2026-10-12 20:10:43'),
 (24, 'GG-C673285D062A', 'pembayaran', 'pembayaran_menunggu_verifikasi', 'menunggu_verifikasi', 'Bukti transfer diunggah pelanggan.', NULL, 'pembayaran:64', '2026-10-12 20:11:17'),
 (25, 'GG-C673285D062A', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Transfer telah diterima dan diverifikasi admin.', 1, 'pembayaran:65', '2026-10-12 20:12:25'),
 (26, 'GG-B2D74B37361B', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:68', '2026-10-12 20:25:08'),
-(27, 'GG-B2D74B37361B', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS diterima dan diverifikasi admin.', NULL, 'pembayaran:69', '2026-10-12 20:26:10'),
+(27, 'GG-B2D74B37361B', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS dikonfirmasi Midtrans.', NULL, 'pembayaran:69', '2026-10-12 20:26:10'),
 (28, 'GG-3A1F362BBB26', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:70', '2026-10-12 20:29:44'),
 (29, 'GG-3A1F362BBB26', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran tunai diterima.', 1, 'pembayaran:71', '2026-10-12 20:29:44'),
 (30, 'GG-4C794F2A8E80', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:72', '2026-10-12 20:30:04'),
-(31, 'GG-4C794F2A8E80', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS diterima dan diverifikasi admin.', NULL, 'pembayaran:73', '2026-10-12 20:30:25'),
+(31, 'GG-4C794F2A8E80', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS dikonfirmasi Midtrans.', NULL, 'pembayaran:73', '2026-10-12 20:30:25'),
 (32, 'GG-1F2166A235D4', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:74', '2026-10-12 20:30:47'),
 (33, 'GG-1F2166A235D4', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran tunai diterima.', 1, 'pembayaran:75', '2026-10-12 20:30:47'),
 (34, 'GG-EAD64FEE545C', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:76', '2026-10-12 20:30:52'),
-(35, 'GG-EAD64FEE545C', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS diterima dan diverifikasi admin.', NULL, 'pembayaran:77', '2026-10-12 20:31:11'),
+(35, 'GG-EAD64FEE545C', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS dikonfirmasi Midtrans.', NULL, 'pembayaran:77', '2026-10-12 20:31:11'),
 (36, 'GG-E7C53E868EAE', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:78', '2026-10-12 20:31:19'),
 (37, 'GG-E7C53E868EAE', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran tunai diterima.', 1, 'pembayaran:79', '2026-10-12 20:31:19'),
 (38, 'GG-B4E733AED04D', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:80', '2026-10-12 20:43:32'),
@@ -558,11 +592,11 @@ INSERT INTO `riwayat_pesanan` (`id`, `kode_transaksi`, `kategori`, `peristiwa`, 
 (209, 'GG-942561BB0503', 'pesanan', 'diproses', NULL, 'Pembayaran diterima. Pesanan mulai disiapkan.', 1, NULL, '2026-10-12 21:55:54'),
 (210, 'GG-942561BB0503', 'pesanan', 'selesai', NULL, 'Barang diterima. Pesanan selesai.', 1, NULL, '2026-10-12 21:55:54'),
 (211, 'GG-B1D502F9E68A', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:133', '2026-10-12 21:56:09'),
-(212, 'GG-B1D502F9E68A', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS diterima dan diverifikasi admin.', NULL, 'pembayaran:134', '2026-10-12 21:56:37'),
+(212, 'GG-B1D502F9E68A', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS dikonfirmasi Midtrans.', NULL, 'pembayaran:134', '2026-10-12 21:56:37'),
 (213, 'GG-B1D502F9E68A', 'pesanan', 'diproses', NULL, 'Pembayaran diterima. Pesanan mulai disiapkan.', NULL, NULL, '2026-10-12 21:56:37'),
 (214, 'GG-B1D502F9E68A', 'pesanan', 'selesai', NULL, 'Barang diterima. Pesanan selesai.', 1, NULL, '2026-10-12 21:56:37'),
 (215, 'GG-54E11921AA52', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', NULL, 'pembayaran:135', '2026-10-12 23:47:59'),
-(216, 'GG-54E11921AA52', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS diterima dan diverifikasi admin.', NULL, 'pembayaran:136', '2026-10-12 23:48:17'),
+(216, 'GG-54E11921AA52', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Pembayaran QRIS dikonfirmasi Midtrans.', NULL, 'pembayaran:136', '2026-10-12 23:48:17'),
 (217, 'GG-54E11921AA52', 'pesanan', 'diproses', NULL, 'Pembayaran diterima. Pesanan mulai disiapkan.', NULL, NULL, '2026-10-12 23:48:17'),
 (218, 'GG-54E11921AA52', 'pesanan', 'dikirim', NULL, 'Barang diserahkan kepada pengantar.', 1, NULL, '2026-10-13 00:13:55'),
 (219, 'GG-54E11921AA52', 'pesanan', 'selesai', NULL, 'Barang diterima. Pesanan selesai.', 1, NULL, '2026-10-13 00:14:06'),
@@ -572,7 +606,15 @@ INSERT INTO `riwayat_pesanan` (`id`, `kode_transaksi`, `kategori`, `peristiwa`, 
 (365, 'GG-5805602CC18C', 'pesanan', 'diproses', NULL, 'Pembayaran diterima. Pesanan mulai disiapkan.', 1, 'diproses:GG-5805602CC18C', '2026-10-13 00:50:17'),
 (366, 'GG-5805602CC18C', 'pesanan', 'siap_diambil', NULL, 'Pesanan siap diambil di GGmart.', 1, 'siap_diambil:GG-5805602CC18C', '2026-10-13 00:51:24'),
 (367, 'GG-968560FAED70', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', 24, 'checkout:GG-968560FAED70', '2026-10-13 00:59:47'),
-(368, 'GG-968560FAED70', 'pembayaran', 'pembayaran_menunggu_verifikasi', 'menunggu_verifikasi', 'Bukti transfer diunggah. Menunggu pemeriksaan admin.', 24, 'bukti:860ca6f8810a065abc890678f136e807e2c727ce.jpg', '2026-10-13 01:00:11');
+(368, 'GG-968560FAED70', 'pembayaran', 'pembayaran_menunggu_verifikasi', 'menunggu_verifikasi', 'Bukti transfer diunggah. Menunggu pemeriksaan admin.', 24, 'bukti:860ca6f8810a065abc890678f136e807e2c727ce.jpg', '2026-10-13 01:00:11'),
+(528, 'GG-968560FAED70', 'pembayaran', 'pembayaran_lunas', 'lunas', 'Transfer telah diterima dan diverifikasi admin.', 1, 'verifikasi:lunas:860ca6f8810a065abc890678f136e807e2c727ce.jpg', '2026-10-13 02:31:37'),
+(529, 'GG-968560FAED70', 'pesanan', 'diproses', NULL, 'Pembayaran diterima. Pesanan mulai disiapkan.', 1, 'diproses:GG-968560FAED70', '2026-10-13 02:31:37'),
+(530, 'GG-968560FAED70', 'pesanan', 'dikirim', NULL, 'Barang diserahkan kepada pengantar.', 1, 'dikirim:GG-968560FAED70', '2026-10-13 02:31:58'),
+(531, 'GG-5F171FEFB609', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', 24, 'checkout:GG-5F171FEFB609', '2026-10-19 18:25:06'),
+(532, 'GG-888D78932E21', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', 24, 'checkout:GG-888D78932E21', '2026-10-19 20:16:32'),
+(533, 'GG-888D78932E21', 'pembayaran', 'pembayaran_menunggu_verifikasi', 'menunggu_verifikasi', 'Bukti pembayaran diunggah. Menunggu pemeriksaan admin.', 24, 'bukti:c8a93cc7c75e31c4f54d57cfb257bd1bcf34a54d.jpg', '2026-10-19 20:16:41'),
+(534, 'GG-5F171FEFB609', 'pembayaran', 'pembayaran_menunggu_verifikasi', 'menunggu_verifikasi', 'Bukti pembayaran diunggah. Menunggu pemeriksaan admin.', 24, 'bukti:dca52ae26cc9699d3096343d57af3dcfd6d59942.jpg', '2026-10-19 20:16:57'),
+(535, 'GG-38795E5C8405', 'pesanan', 'checkout', 'belum_bayar', 'Pesanan dibuat.', 1, 'checkout:GG-38795E5C8405', '2026-10-22 17:38:48');
 
 -- --------------------------------------------------------
 
@@ -601,51 +643,49 @@ CREATE TABLE `transaksi` (
   `tanggal_selesai` datetime DEFAULT NULL,
   `bukti_bayar` varchar(255) DEFAULT NULL,
   `catatan_bayar` varchar(500) DEFAULT NULL,
-  `midtrans_order_id` varchar(80) DEFAULT NULL,
-  `midtrans_id` varchar(100) DEFAULT NULL,
-  `midtrans_env` varchar(15) DEFAULT NULL,
-  `qris_url` varchar(500) DEFAULT NULL,
   `checkout_key` varchar(64) DEFAULT NULL,
   `kecamatan` varchar(100) DEFAULT NULL,
   `sumber_transaksi` varchar(10) NOT NULL DEFAULT 'online',
   `siap_diambil` tinyint(4) NOT NULL DEFAULT 0,
-  `tanggal_kirim` datetime DEFAULT NULL,
-  `tanggal_cek_qris` datetime DEFAULT NULL
+  `tanggal_kirim` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `transaksi`
 --
 
-INSERT INTO `transaksi` (`kode_transaksi`, `id_pengguna`, `tanggal_transaksi`, `total_harga`, `total_pokok`, `status`, `metode_bayar`, `status_bayar`, `metode_pengiriman`, `kelurahan`, `nama_penerima`, `no_hp_penerima`, `alamat_pengiriman`, `ongkir`, `total_tagihan`, `batas_bayar`, `tanggal_bayar`, `tanggal_selesai`, `bukti_bayar`, `catatan_bayar`, `midtrans_order_id`, `midtrans_id`, `midtrans_env`, `qris_url`, `checkout_key`, `kecamatan`, `sumber_transaksi`, `siap_diambil`, `tanggal_kirim`, `tanggal_cek_qris`) VALUES
-('GG-0423BF783EA9', 22, '2026-10-12 09:15:00', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 65000.00, '2026-10-12 20:49:34', '2026-10-12 09:15:00', '2026-10-12 09:15:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'online', 0, NULL, NULL),
-('GG-08F3C54E61D1', 22, '2026-10-07 13:15:00', 90000.00, 63000.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 90000.00, '2026-10-12 20:49:34', '2026-10-07 13:15:00', '2026-10-07 13:15:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'online', 0, NULL, NULL),
-('GG-1F2166A235D4', 1, '2026-10-12 20:30:47', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 65000.00, '2026-10-12 22:30:47', '2026-10-12 20:30:47', '2026-10-12 20:30:47', NULL, NULL, NULL, NULL, NULL, NULL, 'e7707c0e-e0ee-496c-9874-f472ec3faf32', NULL, 'kasir', 0, NULL, NULL),
-('GG-28318AA3CF53', 22, '2026-09-09 15:15:00', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 65000.00, '2026-10-12 20:49:34', '2026-09-09 15:15:00', '2026-09-09 15:15:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'online', 0, NULL, NULL),
-('GG-3A1F362BBB26', 1, '2026-10-12 20:29:44', 45000.00, 31500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:29:44', '2026-10-12 20:29:44', '2026-10-12 20:29:44', NULL, NULL, NULL, NULL, NULL, NULL, 'b880e9bb-f480-4601-aba7-bfa0dbfaf13b', NULL, 'kasir', 0, NULL, NULL),
-('GG-3B6DBC7919F6', 1, '2026-10-12 19:45:00', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 21:45:00', '2026-10-12 19:45:20', '2026-10-12 19:45:22', NULL, NULL, 'GG-3B6DBC7919F6', '67599c3f-3a13-407a-8179-218ad2c6707b', 'sandbox', NULL, '7e38aeea-25e2-4847-93b4-1a9c684df6c9', NULL, 'kasir', 0, NULL, NULL),
-('GG-4C794F2A8E80', 1, '2026-10-12 20:30:04', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:30:04', '2026-10-12 20:30:25', '2026-10-12 20:30:25', NULL, NULL, 'GG-4C794F2A8E80', 'a6c3f57f-e6bd-47af-902f-1475165aa31c', 'sandbox', NULL, 'b7f2e0e3-1629-4eb9-823e-7baeff71f908', NULL, 'kasir', 0, NULL, NULL),
-('GG-5000AB552B3B', 1, '2026-10-12 19:44:43', 90000.00, 63000.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 90000.00, '2026-10-12 21:44:43', '2026-10-12 19:44:43', '2026-10-12 19:44:43', NULL, NULL, NULL, NULL, NULL, NULL, 'd65c6c59-f179-4c18-b4c2-e53b4e0024a9', NULL, 'kasir', 0, NULL, NULL),
-('GG-54E11921AA52', 22, '2026-10-12 23:47:59', 110000.00, 77000.00, 'selesai', 'qris', 'lunas', 'kirim', 'Kayu Putih', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 2', 7000.00, 117000.00, NULL, '2026-10-12 23:48:17', '2026-10-13 00:14:06', NULL, NULL, 'GG-54E11921AA52', 'a9b807c2-086e-4c5a-ad80-b0074f2348ff', 'sandbox', NULL, '78364c4c-ff6e-4bad-b81a-51be4328faf4', 'Oebobo', 'online', 0, '2026-10-13 00:13:55', NULL),
-('GG-5805602CC18C', 22, '2026-10-13 00:49:13', 60000.00, 0.00, 'diproses', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '6285829230787', NULL, 0.00, 60000.00, NULL, '2026-10-13 00:50:17', NULL, '1575acab2a43a3427398bd37d5e0ea47ff37831a.png', '', NULL, NULL, NULL, NULL, 'ffb5653f-f8ec-4c68-b413-80ef7ab719c8', NULL, 'online', 1, NULL, NULL),
-('GG-64AC5C9D9F7B', 22, '2026-10-10 11:15:00', 135000.00, 94500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 135000.00, '2026-10-12 20:49:34', '2026-10-10 11:15:00', '2026-10-10 11:15:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'online', 0, NULL, NULL),
-('GG-73D4D10DCAA1', 22, '2026-10-10 11:15:00', 65000.00, 0.00, 'dibatalkan', 'tunai', 'belum_bayar', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 70000.00, '2026-10-12 20:49:34', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL, NULL),
-('GG-757FE875C94F', 22, '2026-10-12 10:15:00', 135000.00, 94500.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 135000.00, '2026-10-12 20:49:34', '2026-10-12 10:15:00', '2026-10-12 19:06:35', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'online', 0, NULL, NULL),
-('GG-7CDDC6D37F3E', 22, '2026-10-12 09:15:00', 90000.00, 0.00, 'dibatalkan', 'transfer', 'belum_bayar', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 95000.00, '2026-10-12 20:49:34', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL, NULL),
-('GG-88BDD71C994D', 1, '2026-10-12 19:40:09', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 21:40:09', '2026-10-12 19:41:42', '2026-10-12 19:41:55', NULL, NULL, 'GG-88BDD71C994D', 'f196f664-b380-40d2-a39c-36da41d148c7', 'sandbox', NULL, 'a73d6bc1-c666-4a8a-a71f-b617dc5607e7', NULL, 'kasir', 0, NULL, NULL),
-('GG-942561BB0503', 1, '2026-10-12 21:55:28', 45000.00, 31500.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, NULL, '2026-10-12 21:55:54', '2026-10-12 21:55:54', 'ee3a4c8e6d917faa7bcb67ce0bd5231e5ce34f6f.png', '', NULL, NULL, NULL, NULL, '15a3956b-b426-4980-8532-53e6932eb08c', NULL, 'kasir', 0, NULL, NULL),
-('GG-9542E5026F3B', 22, '2026-10-09 12:15:00', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 70000.00, '2026-10-12 20:49:34', '2026-10-09 12:15:00', '2026-10-09 12:15:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL, NULL),
-('GG-968560FAED70', 24, '2026-10-13 00:59:47', 71000.00, 0.00, 'pending', 'transfer', 'menunggu_verifikasi', 'kirim', 'Kayu Putih', 'Stiven Melkianus Adu', '6281000000000', 'Jalan Nasution 2, RT19/RW05', 7000.00, 78000.00, '2026-10-13 02:59:47', NULL, NULL, '860ca6f8810a065abc890678f136e807e2c727ce.jpg', NULL, NULL, NULL, NULL, NULL, '0887372d1609477c8e5a98d4e48f35d6', 'Oebobo', 'online', 0, NULL, NULL),
-('GG-9D68EBB6D777', 1, '2026-10-12 18:58:14', 110000.00, 0.00, 'dibatalkan', 'qris', 'kedaluwarsa', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 110000.00, '2026-10-12 20:58:14', NULL, NULL, NULL, NULL, 'GG-9D68EBB6D777', '4e617ecf-d22e-4634-88b6-2a63a98e81d3', 'sandbox', NULL, '81249061-7446-47fb-9591-76bae545034a', NULL, 'kasir', 0, NULL, NULL),
-('GG-A985CD63D2A0', 22, '2026-09-30 14:15:00', 135000.00, 94500.00, 'selesai', 'qris', 'lunas', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 140000.00, '2026-10-12 20:49:34', '2026-09-30 14:15:00', '2026-09-30 14:15:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL, NULL),
-('GG-B1D502F9E68A', 1, '2026-10-12 21:56:09', 110000.00, 77000.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 110000.00, NULL, '2026-10-12 21:56:37', '2026-10-12 21:56:37', NULL, NULL, 'GG-B1D502F9E68A', '1e73b789-f784-43c0-9293-8ad4bd6071de', 'sandbox', NULL, '4dd7872f-074c-42f1-a242-647079f71db4', NULL, 'kasir', 0, NULL, NULL),
-('GG-B2D74B37361B', 22, '2026-10-12 20:25:08', 135000.00, 94500.00, 'selesai', 'qris', 'lunas', 'kirim', 'Kayu Putih', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 1', 10000.00, 145000.00, '2026-10-12 22:25:08', '2026-10-12 20:26:10', '2026-10-12 20:28:28', NULL, NULL, 'GG-B2D74B37361B', 'a1680263-c1ec-4242-8926-4223ee90e109', 'sandbox', NULL, '9921f4d4-fafb-471e-91ab-7341c9ff90d3', 'Oebobo', 'online', 0, '2026-10-12 20:27:11', NULL),
-('GG-B4E733AED04D', 22, '2026-10-12 20:43:32', 45000.00, 31500.00, 'selesai', 'transfer', 'lunas', 'kirim', 'Kayu Putih', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 1', 7000.00, 52000.00, '2026-10-12 22:43:32', '2026-10-12 20:51:59', '2026-10-12 21:54:29', 'da6766aecabc23cb75f538575185d3efe991623b.png', '', NULL, NULL, NULL, NULL, 'd4ed35b8-bd6d-49d3-8da2-2ff7ed0d788c', 'Oebobo', 'online', 0, '2026-10-12 21:54:18', NULL),
-('GG-BC4714506D05', 22, '2026-10-12 19:38:30', 45000.00, 0.00, 'dibatalkan', 'qris', 'kedaluwarsa', 'kirim', 'Bonipoi', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 1', 15000.00, 60000.00, '2026-10-12 21:38:30', NULL, NULL, NULL, NULL, 'GG-BC4714506D05', 'c56f060d-f6e3-4f93-ae46-e9b2a774365f', 'sandbox', NULL, 'cb28b84f-d8a1-45f5-9b7f-a4339aeb3bb4', 'Kota Lama', 'online', 0, NULL, NULL),
-('GG-C673285D062A', 22, '2026-10-12 20:10:43', 45000.00, 31500.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '6285829230787', NULL, 0.00, 45000.00, '2026-10-12 22:10:43', '2026-10-12 20:12:25', '2026-10-12 20:14:37', '6fb073179734cc8d79462e5c1fde4b19fe04adb9.png', '', NULL, NULL, NULL, NULL, 'ec5c60c7-15b9-490c-a8fd-5cfcbdb98c63', NULL, 'online', 1, NULL, NULL),
-('GG-E7C53E868EAE', 1, '2026-10-12 20:31:19', 45000.00, 31500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:31:19', '2026-10-12 20:31:19', '2026-10-12 20:31:19', NULL, NULL, NULL, NULL, NULL, NULL, '9e58632e-3296-4a7c-9174-2cdb7a5b67d8', NULL, 'kasir', 0, NULL, NULL),
-('GG-EAD64FEE545C', 1, '2026-10-12 20:30:52', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:30:52', '2026-10-12 20:31:11', '2026-10-12 20:31:11', NULL, NULL, 'GG-EAD64FEE545C', '074ad6d4-8233-4bb4-98b5-6c65f76b6c0a', 'sandbox', NULL, 'aebd5391-ffdc-4444-8698-557e84fc8bae', NULL, 'kasir', 0, NULL, NULL),
-('GG-F66DE86C0F47', 22, '2026-10-11 10:15:00', 90000.00, 63000.00, 'selesai', 'transfer', 'lunas', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 95000.00, '2026-10-12 20:49:34', '2026-10-11 10:15:00', '2026-10-11 10:15:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL, NULL);
+INSERT INTO `transaksi` (`kode_transaksi`, `id_pengguna`, `tanggal_transaksi`, `total_harga`, `total_pokok`, `status`, `metode_bayar`, `status_bayar`, `metode_pengiriman`, `kelurahan`, `nama_penerima`, `no_hp_penerima`, `alamat_pengiriman`, `ongkir`, `total_tagihan`, `batas_bayar`, `tanggal_bayar`, `tanggal_selesai`, `bukti_bayar`, `catatan_bayar`, `checkout_key`, `kecamatan`, `sumber_transaksi`, `siap_diambil`, `tanggal_kirim`) VALUES
+('GG-0423BF783EA9', 22, '2026-10-12 09:15:00', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 65000.00, '2026-10-12 20:49:34', '2026-10-12 09:15:00', '2026-10-12 09:15:00', NULL, NULL, NULL, NULL, 'online', 0, NULL),
+('GG-08F3C54E61D1', 22, '2026-10-07 13:15:00', 90000.00, 63000.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 90000.00, '2026-10-12 20:49:34', '2026-10-07 13:15:00', '2026-10-07 13:15:00', NULL, NULL, NULL, NULL, 'online', 0, NULL),
+('GG-1F2166A235D4', 1, '2026-10-12 20:30:47', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 65000.00, '2026-10-12 22:30:47', '2026-10-12 20:30:47', '2026-10-12 20:30:47', NULL, NULL, 'e7707c0e-e0ee-496c-9874-f472ec3faf32', NULL, 'kasir', 0, NULL),
+('GG-28318AA3CF53', 22, '2026-09-09 15:15:00', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 65000.00, '2026-10-12 20:49:34', '2026-09-09 15:15:00', '2026-09-09 15:15:00', NULL, NULL, NULL, NULL, 'online', 0, NULL),
+('GG-38795E5C8405', 1, '2026-10-22 17:38:48', 10000.00, 0.00, 'pending', 'qris', 'belum_bayar', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 10000.00, '2026-10-22 19:38:48', NULL, NULL, NULL, NULL, '334b36df-41e9-460c-b85d-2b1dce1358d6', NULL, 'kasir', 0, NULL),
+('GG-3A1F362BBB26', 1, '2026-10-12 20:29:44', 45000.00, 31500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:29:44', '2026-10-12 20:29:44', '2026-10-12 20:29:44', NULL, NULL, 'b880e9bb-f480-4601-aba7-bfa0dbfaf13b', NULL, 'kasir', 0, NULL),
+('GG-3B6DBC7919F6', 1, '2026-10-12 19:45:00', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 21:45:00', '2026-10-12 19:45:20', '2026-10-12 19:45:22', NULL, NULL, '7e38aeea-25e2-4847-93b4-1a9c684df6c9', NULL, 'kasir', 0, NULL),
+('GG-4C794F2A8E80', 1, '2026-10-12 20:30:04', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:30:04', '2026-10-12 20:30:25', '2026-10-12 20:30:25', NULL, NULL, 'b7f2e0e3-1629-4eb9-823e-7baeff71f908', NULL, 'kasir', 0, NULL),
+('GG-5000AB552B3B', 1, '2026-10-12 19:44:43', 90000.00, 63000.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 90000.00, '2026-10-12 21:44:43', '2026-10-12 19:44:43', '2026-10-12 19:44:43', NULL, NULL, 'd65c6c59-f179-4c18-b4c2-e53b4e0024a9', NULL, 'kasir', 0, NULL),
+('GG-54E11921AA52', 22, '2026-10-12 23:47:59', 110000.00, 77000.00, 'selesai', 'qris', 'lunas', 'kirim', 'Kayu Putih', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 2', 7000.00, 117000.00, NULL, '2026-10-12 23:48:17', '2026-10-13 00:14:06', NULL, NULL, '78364c4c-ff6e-4bad-b81a-51be4328faf4', 'Oebobo', 'online', 0, '2026-10-13 00:13:55'),
+('GG-5805602CC18C', 22, '2026-10-13 00:49:13', 60000.00, 0.00, 'diproses', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '6285829230787', NULL, 0.00, 60000.00, NULL, '2026-10-13 00:50:17', NULL, '1575acab2a43a3427398bd37d5e0ea47ff37831a.png', '', 'ffb5653f-f8ec-4c68-b413-80ef7ab719c8', NULL, 'online', 1, NULL),
+('GG-5F171FEFB609', 24, '2026-10-19 18:25:06', 60000.00, 0.00, 'pending', 'qris', 'menunggu_verifikasi', 'ambil', NULL, 'Stiven Melkianus Adu', '6281000000000', NULL, 0.00, 60000.00, '2026-10-19 20:25:06', NULL, NULL, 'dca52ae26cc9699d3096343d57af3dcfd6d59942.jpg', NULL, '554266d3-b12d-400a-8bb2-89387ba8f2fa', NULL, 'online', 0, NULL),
+('GG-64AC5C9D9F7B', 22, '2026-10-10 11:15:00', 135000.00, 94500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 135000.00, '2026-10-12 20:49:34', '2026-10-10 11:15:00', '2026-10-10 11:15:00', NULL, NULL, NULL, NULL, 'online', 0, NULL),
+('GG-73D4D10DCAA1', 22, '2026-10-10 11:15:00', 65000.00, 0.00, 'dibatalkan', 'tunai', 'belum_bayar', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 70000.00, '2026-10-12 20:49:34', NULL, NULL, NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL),
+('GG-757FE875C94F', 22, '2026-10-12 10:15:00', 135000.00, 94500.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '085829230787', NULL, 0.00, 135000.00, '2026-10-12 20:49:34', '2026-10-12 10:15:00', '2026-10-12 19:06:35', NULL, NULL, NULL, NULL, 'online', 0, NULL),
+('GG-7CDDC6D37F3E', 22, '2026-10-12 09:15:00', 90000.00, 0.00, 'dibatalkan', 'transfer', 'belum_bayar', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 95000.00, '2026-10-12 20:49:34', NULL, NULL, NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL),
+('GG-888D78932E21', 24, '2026-10-19 20:16:32', 60000.00, 0.00, 'pending', 'qris', 'menunggu_verifikasi', 'ambil', NULL, 'Stiven Melkianus Adu', '6281000000000', NULL, 0.00, 60000.00, '2026-10-19 22:16:32', NULL, NULL, 'c8a93cc7c75e31c4f54d57cfb257bd1bcf34a54d.jpg', NULL, 'd7eba59b-2e9a-43e9-b247-aafbe8c95a72', NULL, 'online', 0, NULL),
+('GG-88BDD71C994D', 1, '2026-10-12 19:40:09', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 21:40:09', '2026-10-12 19:41:42', '2026-10-12 19:41:55', NULL, NULL, 'a73d6bc1-c666-4a8a-a71f-b617dc5607e7', NULL, 'kasir', 0, NULL),
+('GG-942561BB0503', 1, '2026-10-12 21:55:28', 45000.00, 31500.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, NULL, '2026-10-12 21:55:54', '2026-10-12 21:55:54', 'ee3a4c8e6d917faa7bcb67ce0bd5231e5ce34f6f.png', '', '15a3956b-b426-4980-8532-53e6932eb08c', NULL, 'kasir', 0, NULL),
+('GG-9542E5026F3B', 22, '2026-10-09 12:15:00', 65000.00, 45500.00, 'selesai', 'tunai', 'lunas', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 70000.00, '2026-10-12 20:49:34', '2026-10-09 12:15:00', '2026-10-09 12:15:00', NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL),
+('GG-968560FAED70', 24, '2026-10-13 00:59:47', 71000.00, 0.00, 'dikirim', 'transfer', 'lunas', 'kirim', 'Kayu Putih', 'Stiven Melkianus Adu', '6281000000000', 'Jalan Nasution 2, RT19/RW05', 7000.00, 78000.00, NULL, '2026-10-13 02:31:37', NULL, '860ca6f8810a065abc890678f136e807e2c727ce.jpg', '', '0887372d1609477c8e5a98d4e48f35d6', 'Oebobo', 'online', 0, '2026-10-13 02:31:58'),
+('GG-9D68EBB6D777', 1, '2026-10-12 18:58:14', 110000.00, 0.00, 'dibatalkan', 'qris', 'kedaluwarsa', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 110000.00, '2026-10-12 20:58:14', NULL, NULL, NULL, NULL, '81249061-7446-47fb-9591-76bae545034a', NULL, 'kasir', 0, NULL),
+('GG-A985CD63D2A0', 22, '2026-09-30 14:15:00', 135000.00, 94500.00, 'selesai', 'qris', 'lunas', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 140000.00, '2026-10-12 20:49:34', '2026-09-30 14:15:00', '2026-09-30 14:15:00', NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL),
+('GG-B1D502F9E68A', 1, '2026-10-12 21:56:09', 110000.00, 77000.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 110000.00, NULL, '2026-10-12 21:56:37', '2026-10-12 21:56:37', NULL, NULL, '4dd7872f-074c-42f1-a242-647079f71db4', NULL, 'kasir', 0, NULL),
+('GG-B2D74B37361B', 22, '2026-10-12 20:25:08', 135000.00, 94500.00, 'selesai', 'qris', 'lunas', 'kirim', 'Kayu Putih', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 1', 10000.00, 145000.00, '2026-10-12 22:25:08', '2026-10-12 20:26:10', '2026-10-12 20:28:28', NULL, NULL, '9921f4d4-fafb-471e-91ab-7341c9ff90d3', 'Oebobo', 'online', 0, '2026-10-12 20:27:11'),
+('GG-B4E733AED04D', 22, '2026-10-12 20:43:32', 45000.00, 31500.00, 'selesai', 'transfer', 'lunas', 'kirim', 'Kayu Putih', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 1', 7000.00, 52000.00, '2026-10-12 22:43:32', '2026-10-12 20:51:59', '2026-10-12 21:54:29', 'da6766aecabc23cb75f538575185d3efe991623b.png', '', 'd4ed35b8-bd6d-49d3-8da2-2ff7ed0d788c', 'Oebobo', 'online', 0, '2026-10-12 21:54:18'),
+('GG-BC4714506D05', 22, '2026-10-12 19:38:30', 45000.00, 0.00, 'dibatalkan', 'qris', 'kedaluwarsa', 'kirim', 'Bonipoi', 'pelanggan', '6285829230787', 'Jl Perintis Kemerdekaan 1', 15000.00, 60000.00, '2026-10-12 21:38:30', NULL, NULL, NULL, NULL, 'cb28b84f-d8a1-45f5-9b7f-a4339aeb3bb4', 'Kota Lama', 'online', 0, NULL),
+('GG-C673285D062A', 22, '2026-10-12 20:10:43', 45000.00, 31500.00, 'selesai', 'transfer', 'lunas', 'ambil', NULL, 'pelanggan', '6285829230787', NULL, 0.00, 45000.00, '2026-10-12 22:10:43', '2026-10-12 20:12:25', '2026-10-12 20:14:37', '6fb073179734cc8d79462e5c1fde4b19fe04adb9.png', '', 'ec5c60c7-15b9-490c-a8fd-5cfcbdb98c63', NULL, 'online', 1, NULL),
+('GG-E7C53E868EAE', 1, '2026-10-12 20:31:19', 45000.00, 31500.00, 'selesai', 'tunai', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:31:19', '2026-10-12 20:31:19', '2026-10-12 20:31:19', NULL, NULL, '9e58632e-3296-4a7c-9174-2cdb7a5b67d8', NULL, 'kasir', 0, NULL),
+('GG-EAD64FEE545C', 1, '2026-10-12 20:30:52', 45000.00, 31500.00, 'selesai', 'qris', 'lunas', 'ambil', NULL, 'admin', NULL, NULL, 0.00, 45000.00, '2026-10-12 22:30:52', '2026-10-12 20:31:11', '2026-10-12 20:31:11', NULL, NULL, 'aebd5391-ffdc-4444-8698-557e84fc8bae', NULL, 'kasir', 0, NULL),
+('GG-F66DE86C0F47', 22, '2026-10-11 10:15:00', 90000.00, 63000.00, 'selesai', 'transfer', 'lunas', 'kirim', 'Fatululi', 'pelanggan', '085829230787', 'Jl Perintis Kemerdekaan 1', 5000.00, 95000.00, '2026-10-12 20:49:34', '2026-10-11 10:15:00', '2026-10-11 10:15:00', NULL, NULL, NULL, 'Oebobo', 'online', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -822,7 +862,6 @@ ALTER TABLE `riwayat_pesanan`
 ALTER TABLE `transaksi`
   ADD PRIMARY KEY (`kode_transaksi`),
   ADD UNIQUE KEY `uq_checkout_key` (`checkout_key`),
-  ADD UNIQUE KEY `uq_midtrans_order` (`midtrans_order_id`),
   ADD KEY `idx_kode_transaksi` (`kode_transaksi`),
   ADD KEY `idx_tanggal_transaksi` (`tanggal_transaksi`),
   ADD KEY `idx_metode_bayar` (`metode_bayar`),
@@ -843,7 +882,7 @@ ALTER TABLE `zona_pengiriman`
 -- AUTO_INCREMENT untuk tabel `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=191;
+  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
 
 --
 -- AUTO_INCREMENT untuk tabel `kategori`
@@ -855,7 +894,7 @@ ALTER TABLE `kategori`
 -- AUTO_INCREMENT untuk tabel `keranjang`
 --
 ALTER TABLE `keranjang`
-  MODIFY `id_keranjang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
+  MODIFY `id_keranjang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=256;
 
 --
 -- AUTO_INCREMENT untuk tabel `mutasi_stok`
@@ -867,7 +906,7 @@ ALTER TABLE `mutasi_stok`
 -- AUTO_INCREMENT untuk tabel `notifikasi`
 --
 ALTER TABLE `notifikasi`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=218;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengguna`
@@ -879,7 +918,7 @@ ALTER TABLE `pengguna`
 -- AUTO_INCREMENT untuk tabel `riwayat_pesanan`
 --
 ALTER TABLE `riwayat_pesanan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=528;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=536;
 
 --
 -- AUTO_INCREMENT untuk tabel `zona_pengiriman`
