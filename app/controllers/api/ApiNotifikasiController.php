@@ -55,6 +55,17 @@ class ApiNotifikasiController
       response(['success'=>true]);
     } catch(Throwable $e) { orderError($e); }
   }
+  public function clear()
+  {
+    try {
+      if (input('sesi','')!==$this->session) throw new Exception('Sesi notifikasi berubah.',409);
+      $id=(int)$this->user['id_pengguna']; $role=$this->user['role'];
+      // Hapus hanya notifikasi milik akun dan peran yang sedang aktif.
+      // Riwayat pesanan tetap utuh sebagai sumber audit.
+      oq('DELETE FROM notifikasi WHERE id_pengguna=? AND peran=?',[$id,$role]);
+      response(['success'=>true,'data'=>['cleared'=>true]]);
+    } catch(Throwable $e) { orderError($e); }
+  }
   public function claim()
   {
     try {

@@ -10,7 +10,7 @@
       <button type="button" class="notification-enable" x-show="$store.notifications.supported && $store.notifications.permission !== 'denied' && !$store.notifications.browserActive" :disabled="$store.notifications.enabling" @click="$store.notifications.enableBrowser()" x-text="$store.notifications.enabling ? 'Mengaktifkan…' : 'Aktifkan notifikasi browser'"></button>
       <button type="button" class="notification-enable" x-show="$store.notifications.browserActive" @click="$store.notifications.disableBrowser()">Nonaktifkan di perangkat ini</button>
     </div>
-    <div class="notification-toolbar"><span>Pemberitahuan terbaru</span><button type="button" :disabled="!$store.notifications.unread || $store.notifications.busy" @click="$store.notifications.readAll()">Tandai semua dibaca</button></div>
+    <div class="notification-toolbar"><span>Pemberitahuan terbaru</span><div class="flex items-center gap-3"><button type="button" :disabled="!$store.notifications.unread || $store.notifications.busy" @click="$store.notifications.readAll()">Tandai semua dibaca</button><button type="button" :disabled="!$store.notifications.items.length || $store.notifications.busy" @click="$store.notifications.clearAll()">Bersihkan</button></div></div>
     <div class="notification-list">
       <p class="notification-empty" x-show="$store.notifications.loading">Memuat notifikasi…</p>
       <p class="notification-error" role="status" x-show="$store.notifications.error" x-text="$store.notifications.error"></p>

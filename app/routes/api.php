@@ -90,6 +90,7 @@ get('/api/dashboard/analytics', 'ApiDashboardController@analytics', ['role:admin
 get('/api/transaksi/badge', 'ApiTransaksiController@badge', ['role:admin,pimpinan,kasir']);
 get('/api/notifikasi', 'ApiNotifikasiController@list', ['role:admin,kasir,pelanggan']);
 post('/api/notifikasi/baca', 'ApiNotifikasiController@read', ['role:admin,kasir,pelanggan']);
+post('/api/notifikasi/bersihkan', 'ApiNotifikasiController@clear', ['role:admin,kasir,pelanggan']);
 post('/api/notifikasi/klaim', 'ApiNotifikasiController@claim', ['role:admin,kasir,pelanggan']);
 get('/api/kasir/pesanan', 'ApiTransaksiController@pesanan_kasir', ['role:admin,kasir']);
 

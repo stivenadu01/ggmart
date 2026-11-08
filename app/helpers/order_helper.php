@@ -3,7 +3,7 @@
 function oq(string $sql, array $params = []) { return db()->execute_query($sql, $params); }
 function orderRow(string $code, bool $lock = false): ?array
 {
-  return oq('SELECT t.*, p.metode_pengiriman,p.kelurahan,p.nama_penerima,p.no_hp_penerima,p.alamat_pengiriman,p.ongkir,p.kecamatan,p.siap_diambil,p.tanggal_kirim, u.nama AS user, u.role AS user_role, u.no_hp AS user_phone FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi LEFT JOIN pengguna u ON u.id_pengguna=t.id_pengguna WHERE t.kode_transaksi=?' . ($lock ? ' FOR UPDATE' : ''), [$code])->fetch_assoc();
+  return oq('SELECT t.*, u.nama AS user, u.role AS user_role, u.no_hp AS user_phone, pg.metode_pengiriman, pg.kelurahan, pg.nama_penerima, pg.no_hp_penerima, pg.alamat_pengiriman, pg.ongkir, pg.kecamatan, pg.siap_diambil, pg.tanggal_kirim FROM transaksi t LEFT JOIN pengguna u ON u.id_pengguna=t.id_pengguna LEFT JOIN pengiriman pg ON pg.kode_transaksi=t.kode_transaksi WHERE t.kode_transaksi=?' . ($lock ? ' FOR UPDATE' : ''), [$code])->fetch_assoc();
 }
 function orderError(Throwable $e): void
 {
@@ -31,16 +31,16 @@ function paymentMethods(): array
   $bank = storeSettings();
   return ['tunai'=>true, 'transfer'=> $bank['bank_nama'] !== '' && $bank['bank_rekening'] !== '' && $bank['bank_pemilik'] !== '', 'qris'=>true];
 }
-function recordOrderEvent(string $code, string $event, string $note = '', ?int $staff = null, ?string $key = null, ?string $paymentStatus = null): void
+function recordOrderEvent(string $code, string $event, string $note = '', ?int $staff = null, ?string $key = null): void
 {
   $category=str_starts_with($event,'pembayaran_') ? 'pembayaran' : 'pesanan';
   if ($key===null && in_array($event,['checkout','diproses','siap_diambil','dikirim','selesai','dibatalkan'],true)) $key=$event . ':' . $code;
-  oq('INSERT INTO riwayat_pesanan(kode_transaksi,kategori,peristiwa,status_bayar,catatan,petugas,kunci_peristiwa) VALUES (?,?,?,?,?,?,?)', [$code,$category,$event,$paymentStatus,mb_substr($note,0,500),$staff,$key]);
+  oq('INSERT INTO riwayat_pesanan(kode_transaksi,kategori,peristiwa,catatan,petugas,kunci_peristiwa) VALUES (?,?,?,?,?,?)', [$code,$category,$event,mb_substr($note,0,500),$staff,$key]);
   queueOrderNotifications((int)db()->insert_id,$code,$event,$note,$staff);
 }
 function recordPayment(string $code, string $status, string $note = '', ?int $staff = null, ?string $key = null): void
 {
-  recordOrderEvent($code,'pembayaran_' . $status,$note,$staff,$key,$status);
+  recordOrderEvent($code,'pembayaran_' . $status,$note,$staff,$key);
 }
 // Harus dipanggil dalam transaksi database, setelah pembayaran sah.
 function processPaidOrder(string $code, ?int $staff = null): void
@@ -155,7 +155,7 @@ function createOrder(array $input, array $user, bool $cashier = false): string
     $minutes=120;
     $expiry=date('Y-m-d H:i:s',time()+$minutes*60);
     oq("INSERT INTO transaksi(kode_transaksi,id_pengguna,total_harga,total_pokok,status,metode_bayar,status_bayar,total_tagihan,batas_bayar,checkout_key,sumber_transaksi) VALUES (?,?,?,0,'pending',?,'belum_bayar',?,?,?,?)",[$code,$user['id_pengguna'],$subtotal,$method,$subtotal+$shipping,$expiry,$key,$cashier ? 'kasir' : 'online']);
-    oq("INSERT INTO pengiriman(kode_transaksi,metode_pengiriman,kelurahan,nama_penerima,no_hp_penerima,alamat_pengiriman,ongkir,kecamatan) VALUES (?,?,?,?,?,?,?,?)",[$code,$delivery,$district,$name,$phone,$address,$shipping,$subdistrict]);
+    oq("INSERT INTO pengiriman(kode_transaksi,metode_pengiriman,kelurahan,nama_penerima,no_hp_penerima,alamat_pengiriman,ongkir,kecamatan,siap_diambil) VALUES (?,?,?,?,?,?,?,?,0)",[$code,$delivery,$district,$name,$phone,$address,$shipping,$subdistrict]);
     foreach ($details as [$product,$qty,$price]) {
       oq('INSERT INTO detail_transaksi(kode_transaksi,kode_produk,jumlah,harga_satuan,harga_pokok) VALUES (?,?,?,?,0)',[$code,$product,$qty,$price]);
       oq('INSERT INTO reservasi_stok(kode_transaksi,kode_produk,jumlah) VALUES (?,?,?)',[$code,$product,$qty]);

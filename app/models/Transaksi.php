@@ -98,8 +98,16 @@ function getTransaksiList(
   $total = (int)($stmt->get_result()->fetch_assoc()['total'] ?? 0);
   $stmt->close();
 
-  $sqlData = "SELECT t.*, p.metode_pengiriman,p.kelurahan,p.nama_penerima,p.no_hp_penerima,p.alamat_pengiriman,p.ongkir,p.kecamatan,p.siap_diambil,p.tanggal_kirim, u.nama AS user, u.role AS user_role, u.no_hp AS user_phone
-    FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi LEFT JOIN pengguna u ON t.id_pengguna = u.id_pengguna
+  // Data daftar harus memuat metode dan status pengiriman dari tabel pengiriman,
+  // sama seperti data detail transaksi. Tanpa JOIN ini, metode_pengiriman bernilai
+  // NULL sehingga halaman utama salah menampilkan "Ambil di tempat" dan aksi.
+  $sqlData = "SELECT t.*, pg.metode_pengiriman, pg.kelurahan, pg.nama_penerima,
+      pg.no_hp_penerima, pg.alamat_pengiriman, pg.ongkir, pg.kecamatan,
+      pg.siap_diambil, pg.tanggal_kirim,
+      u.nama AS user, u.role AS user_role, u.no_hp AS user_phone
+    FROM transaksi t
+    LEFT JOIN pengiriman pg ON pg.kode_transaksi = t.kode_transaksi
+    LEFT JOIN pengguna u ON t.id_pengguna = u.id_pengguna
     $where ORDER BY t.tanggal_transaksi DESC LIMIT ? OFFSET ?";
   $dataParams = [...$params, $limit, $offset];
   $dataTypes = $types . 'ii';
@@ -126,7 +134,7 @@ function getTransaksiList(
 function findTransaksi($kode_transaksi)
 {
   $conn = db();
-  $stmt = $conn->prepare("SELECT t.*, p.metode_pengiriman,p.kelurahan,p.nama_penerima,p.no_hp_penerima,p.alamat_pengiriman,p.ongkir,p.kecamatan,p.siap_diambil,p.tanggal_kirim, u.nama AS user, u.role AS user_role, u.no_hp AS user_phone FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi LEFT JOIN pengguna u ON t.id_pengguna=u.id_pengguna WHERE t.kode_transaksi = ?");
+  $stmt = $conn->prepare("SELECT t.*, pg.metode_pengiriman,pg.kelurahan,pg.nama_penerima,pg.no_hp_penerima,pg.alamat_pengiriman,pg.ongkir,pg.kecamatan,pg.siap_diambil,pg.tanggal_kirim,u.nama AS user, u.role AS user_role, u.no_hp AS user_phone FROM transaksi t LEFT JOIN pengiriman pg ON pg.kode_transaksi=t.kode_transaksi LEFT JOIN pengguna u ON t.id_pengguna=u.id_pengguna WHERE t.kode_transaksi = ?");
   $stmt->bind_param("s", $kode_transaksi);
   $stmt->execute();
   $res = $stmt->get_result()->fetch_assoc();
@@ -137,7 +145,7 @@ function findTransaksi($kode_transaksi)
 function findTransaksiForUpdate($kode_transaksi)
 {
   $conn = db();
-  $stmt = $conn->prepare("SELECT t.*, p.metode_pengiriman,p.kelurahan,p.nama_penerima,p.no_hp_penerima,p.alamat_pengiriman,p.ongkir,p.kecamatan,p.siap_diambil,p.tanggal_kirim, u.nama AS user, u.role AS user_role, u.no_hp AS user_phone FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi LEFT JOIN pengguna u ON t.id_pengguna=u.id_pengguna WHERE t.kode_transaksi = ? FOR UPDATE");
+  $stmt = $conn->prepare("SELECT t.*, pg.metode_pengiriman,pg.kelurahan,pg.nama_penerima,pg.no_hp_penerima,pg.alamat_pengiriman,pg.ongkir,pg.kecamatan,pg.siap_diambil,pg.tanggal_kirim,u.nama AS user, u.role AS user_role, u.no_hp AS user_phone FROM transaksi t LEFT JOIN pengiriman pg ON pg.kode_transaksi=t.kode_transaksi LEFT JOIN pengguna u ON t.id_pengguna=u.id_pengguna WHERE t.kode_transaksi = ? FOR UPDATE");
   $stmt->bind_param("s", $kode_transaksi);
   $stmt->execute();
   $res = $stmt->get_result()->fetch_assoc();

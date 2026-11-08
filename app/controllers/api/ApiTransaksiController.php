@@ -22,7 +22,7 @@ class ApiTransaksiController
     try {
       $trx=$this->accessible(trim(query('k','')));
       $trx['detail']=getDetailTransaksi($trx['kode_transaksi']);
-      $trx['riwayat_pesanan']=oq('SELECT r.id,r.kategori,r.peristiwa,r.status_bayar,r.catatan,r.tanggal,u.nama AS petugas FROM riwayat_pesanan r LEFT JOIN pengguna u ON u.id_pengguna=r.petugas WHERE r.kode_transaksi=? ORDER BY r.tanggal,r.id',[$trx['kode_transaksi']])->fetch_all(MYSQLI_ASSOC);
+      $trx['riwayat_pesanan']=oq('SELECT r.id,r.kategori,r.peristiwa,r.catatan,r.tanggal,u.nama AS petugas FROM riwayat_pesanan r LEFT JOIN pengguna u ON u.id_pengguna=r.petugas WHERE r.kode_transaksi=? ORDER BY r.tanggal,r.id',[$trx['kode_transaksi']])->fetch_all(MYSQLI_ASSOC);
       $trx['rekening']=storeSettings();
       $trx['bukti_url']=$trx['bukti_bayar'] ? BASE_URL . '/api/pembayaran/bukti/' . rawurlencode($trx['kode_transaksi']) : null;
       unset($trx['bukti_bayar'],$trx['checkout_key']);
@@ -67,7 +67,8 @@ class ApiTransaksiController
           if ($trx['status']!=='diproses' || ($trx['status_bayar']!=='lunas' && !$cashPickup) || $trx['sumber_transaksi']!=='online') throw new Exception('Pesanan belum dapat disiapkan atau dikirim.',409);
           if ($action==='kirim') {
             if ($trx['metode_pengiriman']!=='kirim') throw new Exception('Pesanan ini diambil di tempat.',409);
-            oq("UPDATE transaksi SET status='dikirim' WHERE kode_transaksi=?",[$code]); oq("UPDATE pengiriman SET tanggal_kirim=NOW() WHERE kode_transaksi=?",[$code]);
+            oq("UPDATE transaksi SET status='dikirim' WHERE kode_transaksi=?",[$code]);
+            oq('UPDATE pengiriman SET tanggal_kirim=NOW() WHERE kode_transaksi=?',[$code]);
             recordOrderEvent($code,'dikirim','Barang diserahkan kepada pengantar.',(int)$_SESSION['user']['id_pengguna']);
           } else {
             if ($trx['metode_pengiriman']!=='ambil') throw new Exception('Pesanan ini menggunakan pengiriman.',409);
@@ -90,7 +91,7 @@ class ApiTransaksiController
   public function pesanan_kasir()
   {
     try {
-      $rows=oq("SELECT t.kode_transaksi,p.nama_penerima,t.metode_bayar,t.status_bayar,t.status,p.metode_pengiriman,p.siap_diambil,t.total_tagihan,t.tanggal_transaksi FROM transaksi t LEFT JOIN pengiriman p ON p.kode_transaksi=t.kode_transaksi WHERE t.sumber_transaksi='online' AND t.status IN ('pending','diproses','dikirim') ORDER BY t.tanggal_transaksi DESC LIMIT 50")->fetch_all(MYSQLI_ASSOC);
+      $rows=oq("SELECT t.kode_transaksi,pg.nama_penerima,t.metode_bayar,t.status_bayar,t.status,pg.metode_pengiriman,pg.siap_diambil,t.total_tagihan,t.tanggal_transaksi FROM transaksi t LEFT JOIN pengiriman pg ON pg.kode_transaksi=t.kode_transaksi WHERE t.sumber_transaksi='online' AND t.status IN ('pending','diproses','dikirim') ORDER BY tanggal_transaksi DESC LIMIT 50")->fetch_all(MYSQLI_ASSOC);
       response(['success'=>true,'data'=>$rows]);
     } catch (Throwable $e) { orderError($e); }
   }

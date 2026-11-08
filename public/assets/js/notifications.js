@@ -181,6 +181,17 @@ document.addEventListener('alpine:init', () => {
         await this.refresh();
       } catch (error) { this.error = error.message; }
     },
+    async clearAll() {
+      if (!this.items.length || this.busy) return;
+      if (!window.confirm('Hapus semua notifikasi pada akun ini? Riwayat pesanan tidak akan dihapus.')) return;
+      this.busy = true;
+      try {
+        await request('/bersihkan', {});
+        await dismissReadNotifications(Infinity);
+        this.items = []; this.unread = 0; this.latest = 0; this.more = false; this.next = 0; this.error = '';
+      } catch (error) { this.error = error.message; }
+      finally { this.busy = false; }
+    },
     async visit(item) {
       try {
         await request('/baca', { id: Number(item.id) });
