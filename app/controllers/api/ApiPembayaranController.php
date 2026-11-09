@@ -77,7 +77,7 @@ class ApiPembayaranController
     db()->begin_transaction();
     try {
       receivePickupCash(trim((string)input('kode_transaksi','')),(int)$_SESSION['user']['id_pengguna']);
-      db()->commit(); response(['success'=>true,'message'=>'Uang tunai diterima. Pesanan selesai.']);
+      db()->commit(); response(['success'=>true,'message'=>'Uang tunai diterima dan penyerahan kepada pelanggan dicatat. Menunggu konfirmasi penerimaan.']);
     } catch (Throwable $e) { db()->rollback(); orderError($e); }
   }
 

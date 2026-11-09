@@ -36,7 +36,7 @@ function paymentPanel() {
     get canPay() { return !!this.trx && this.trx.status === 'pending' && ['belum_bayar', 'ditolak'].includes(this.trx.status_bayar); },
     get canUpload() { return this.canPay && (this.role === 'pelanggan' || this.trx.sumber_transaksi === 'kasir' && ['admin', 'kasir'].includes(this.role)); },
     get printRequested() { return new URLSearchParams(window.location.search || '').get('cetak') === '1'; },
-    eventLabel(event) { return ({ checkout: 'Pesanan dibuat', diproses: 'Pesanan diproses', siap_diambil: 'Siap diambil', dikirim: 'Pesanan dikirim', selesai: 'Pesanan selesai', dibatalkan: 'Pesanan dibatalkan', pembayaran_belum_bayar: 'Menunggu pembayaran', pembayaran_menunggu_verifikasi: 'Menunggu verifikasi pembayaran', pembayaran_lunas: 'Pembayaran diterima', pembayaran_ditolak: 'Bukti pembayaran ditolak', pembayaran_kedaluwarsa: 'Batas pembayaran berakhir', pembayaran_perlu_refund: 'Pengembalian dana diperlukan', pembayaran_dikembalikan: 'Dana dikembalikan' })[event] || event; },
+    eventLabel(event) { return ({ checkout: 'Pesanan dibuat', diproses: 'Pesanan diproses', siap_diambil: 'Siap diambil', dikirim: 'Pesanan dikirim', telah_diserahkan: 'Barang diserahkan ke penerima', konfirmasi_penerimaan: 'Konfirmasi penerimaan', selesai_otomatis: 'Selesai otomatis', selesai: 'Pesanan selesai', dibatalkan: 'Pesanan dibatalkan', pembayaran_belum_bayar: 'Menunggu pembayaran', pembayaran_menunggu_verifikasi: 'Menunggu verifikasi pembayaran', pembayaran_lunas: 'Pembayaran diterima', pembayaran_ditolak: 'Bukti pembayaran ditolak', pembayaran_kedaluwarsa: 'Batas pembayaran berakhir', pembayaran_perlu_refund: 'Pengembalian dana diperlukan', pembayaran_dikembalikan: 'Dana dikembalikan' })[event] || event; },
     paymentLabel(status) { return ({ belum_bayar: 'Belum dibayar', menunggu_verifikasi: 'Menunggu verifikasi', lunas: 'Lunas', ditolak: 'Bukti ditolak', kedaluwarsa: 'Kedaluwarsa', perlu_refund: 'Menunggu pengembalian dana', dikembalikan: 'Dana dikembalikan' })[status] || status; },
     async init() { await this.load(); },
     destroy() { this.disposed = true; clearTimeout(this.timer); },
@@ -53,7 +53,7 @@ function paymentPanel() {
     },
     scheduleCheck(delay = 5000) {
       clearTimeout(this.timer);
-      if (!this.disposed && !this.redirecting && this.trx && ['pending', 'diproses', 'dikirim'].includes(this.trx.status)) this.timer = setTimeout(() => this.refreshStatus(), delay);
+      if (!this.disposed && !this.redirecting && this.trx && ['pending', 'diproses', 'dikirim', 'telah_diserahkan'].includes(this.trx.status)) this.timer = setTimeout(() => this.refreshStatus(), delay);
     },
     async refreshStatus() {
       if (this.disposed || this.checking || this.busy || document.hidden) { this.scheduleCheck(); return; }
@@ -64,6 +64,11 @@ function paymentPanel() {
       try { this.trx = (await API.get('/transaksi/detail?k=' + encodeURIComponent(this.code), false, quiet)).data; this.$dispatch('payment-updated', this.trx); if (!this.returnToCounter()) this.scheduleCheck(); }
       catch (e) { this.error = e.message; this.scheduleCheck(15000); }
       finally { this.loading = false; }
+    },
+    async confirmReceipt() {
+      if (this.busy || this.role !== 'pelanggan' || this.trx?.status !== 'telah_diserahkan') return;
+      if (!await Alpine.store('ui').confirm('Pastikan pesanan sudah diterima. Konfirmasi penerimaan pesanan ini?')) return;
+      await this.action('/transaksi/konfirmasi-penerimaan');
     },
     async action(endpoint, extra = {}) {
       if (this.busy) return;
@@ -140,17 +145,17 @@ utils.customerWhatsApp = function (trx) {
 utils.orderStatus = function (trx) {
   if (trx.status === 'pending') return trx.status_bayar === 'menunggu_verifikasi' ? 'Menunggu verifikasi' : trx.status_bayar === 'lunas' ? 'Diproses' : 'Menunggu pembayaran';
   if (trx.status === 'diproses' && Number(trx.siap_diambil)) return 'Siap diambil';
-  return ({ diproses: 'Diproses', dikirim: 'Dikirim', selesai: 'Selesai', dibatalkan: 'Dibatalkan' })[trx.status] || trx.status;
+  return ({ diproses: 'Diproses', dikirim: 'Dikirim', telah_diserahkan: 'Menunggu Konfirmasi Penerimaan', selesai: 'Selesai', dibatalkan: 'Dibatalkan' })[trx.status] || trx.status;
 };
 utils.orderAction = function (trx) {
   if (trx.status === 'diproses' && trx.metode_bayar === 'tunai' && trx.status_bayar === 'belum_bayar' && trx.metode_pengiriman === 'ambil' && trx.sumber_transaksi === 'online') {
-    return Number(trx.siap_diambil) ? { endpoint: 'tunai', label: 'Terima tunai & serahkan', question: 'Pastikan uang tunai sudah diterima dan barang diserahkan kepada pelanggan. Selesaikan pesanan?' } : { endpoint: 'siap-ambil', label: 'Siap diambil', question: 'Pesanan sudah siap diambil pelanggan?' };
+    return Number(trx.siap_diambil) ? { endpoint: 'tunai', label: 'Terima tunai & tandai diserahkan', question: 'Pastikan uang tunai sudah diterima dan barang benar-benar diserahkan kepada pelanggan. Catat penyerahan?' } : { endpoint: 'siap-ambil', label: 'Siap diambil', question: 'Pesanan sudah siap diambil pelanggan?' };
   }
   if (trx.status_bayar !== 'lunas') return null;
   if (trx.status === 'pending') return { endpoint: 'proses', label: 'Proses', question: 'Mulai menyiapkan pesanan ini?' };
   if (trx.status === 'diproses' && trx.metode_pengiriman === 'kirim') return { endpoint: 'kirim', label: 'Kirim pesanan', question: 'Barang sudah diserahkan kepada pengantar?' };
   if (trx.status === 'diproses' && trx.sumber_transaksi === 'online' && !Number(trx.siap_diambil)) return { endpoint: 'siap-ambil', label: 'Siap diambil', question: 'Pesanan sudah siap diambil pelanggan?' };
-  if (['diproses', 'dikirim'].includes(trx.status)) return { endpoint: 'konfirmasi', label: 'Selesaikan', question: 'Pastikan barang sudah diterima pelanggan. Selesaikan pesanan ini?' };
+  if (trx.status === 'dikirim' || (trx.status === 'diproses' && trx.sumber_transaksi === 'online' && trx.metode_pengiriman === 'ambil' && Number(trx.siap_diambil))) return { endpoint: 'serahkan', label: 'Telah Diserahkan ke Penerima', question: 'Petugas sudah menyerahkan barang kepada penerima? Catat penyerahan dan mulai batas konfirmasi 24 jam?' };
   return null;
 };
 utils.orderEndpoint = action => action.endpoint === 'tunai' ? '/pembayaran/tunai' : '/transaksi/' + action.endpoint;

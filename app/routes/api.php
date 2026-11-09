@@ -53,7 +53,8 @@ post('/api/transaksi/user', 'ApiTransaksiController@tambah_transaksi_user', ["ro
 post('/api/transaksi/proses', 'ApiTransaksiController@proses_transaksi', ["role:admin,kasir"]); // proses
 post('/api/transaksi/kirim', 'ApiTransaksiController@kirim_transaksi', ['role:admin']);
 post('/api/transaksi/siap-ambil', 'ApiTransaksiController@siap_ambil', ['role:admin']);
-post('/api/transaksi/konfirmasi', 'ApiTransaksiController@konfirmasi_transaksi', ["role:admin,kasir"]); // selesai
+post('/api/transaksi/serahkan', 'ApiTransaksiController@serahkan_ke_penerima', ["role:admin"]); // admin mencatat serah terima fisik
+post('/api/transaksi/konfirmasi-penerimaan', 'ApiTransaksiController@konfirmasi_penerimaan', ["role:pelanggan"]); // pelanggan pemilik pesanan
 
 post('/api/transaksi/batal', 'ApiTransaksiController@batal_transaksi', ["role:admin,kasir"]); // admin & kasir
 post('/api/transaksi/batal-pending', 'ApiTransaksiController@batal_transaksi_pending', ["role:pelanggan"]); // pending pelanggan

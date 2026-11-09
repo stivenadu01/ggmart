@@ -34,7 +34,7 @@ function paymentMethods(): array
 function recordOrderEvent(string $code, string $event, string $note = '', ?int $staff = null, ?string $key = null): void
 {
   $category=str_starts_with($event,'pembayaran_') ? 'pembayaran' : 'pesanan';
-  if ($key===null && in_array($event,['checkout','diproses','siap_diambil','dikirim','selesai','dibatalkan'],true)) $key=$event . ':' . $code;
+  if ($key===null && in_array($event,['checkout','diproses','siap_diambil','dikirim','telah_diserahkan','konfirmasi_penerimaan','selesai','selesai_otomatis','dibatalkan'],true)) $key=$event . ':' . $code;
   oq('INSERT INTO riwayat_pesanan(kode_transaksi,kategori,peristiwa,catatan,petugas,kunci_peristiwa) VALUES (?,?,?,?,?,?)', [$code,$category,$event,mb_substr($note,0,500),$staff,$key]);
   queueOrderNotifications((int)db()->insert_id,$code,$event,$note,$staff);
 }
@@ -57,12 +57,29 @@ function receivePickupCash(string $code, int $staff): void
 {
   $trx=orderRow($code,true);
   if (!$trx || $trx['sumber_transaksi']!=='online' || $trx['metode_pengiriman']!=='ambil' || $trx['metode_bayar']!=='tunai') throw new Exception('Pembayaran tunai hanya untuk pesanan ambil di tempat.',409);
-  if ($trx['status']==='selesai' && $trx['status_bayar']==='lunas') return;
+  if ($trx['status']==='telah_diserahkan' && $trx['status_bayar']==='lunas') return;
   if ($trx['status']!=='diproses' || !(int)$trx['siap_diambil'] || $trx['status_bayar']!=='belum_bayar') throw new Exception('Pesanan harus siap diambil dan belum dibayar.',409);
   oq("UPDATE transaksi SET status_bayar='lunas',tanggal_bayar=NOW() WHERE kode_transaksi=?",[$code]);
-  recordPayment($code,'lunas','Uang tunai diterima saat pesanan diserahkan.',$staff,'tunai:' . $code);
-  completeOrder($code,$staff);
+  recordPayment($code,'lunas','Uang tunai diterima saat pengambilan pesanan.',$staff,'tunai:' . $code);
+  markOrderDelivered($code,$staff);
 }
+// Mencatat bahwa barang sudah diserahkan secara fisik kepada penerima.
+// Dipanggil dalam transaksi database dengan baris transaksi terkunci.
+function markOrderDelivered(string $code, int $staff): void
+{
+  $trx=orderRow($code,true);
+  if (!$trx || $trx['sumber_transaksi']!=='online') throw new Exception('Tahap serah terima hanya berlaku untuk pesanan online.',409);
+  if ($trx['status_bayar']!=='lunas') throw new Exception('Pesanan harus sudah lunas sebelum diserahkan.',409);
+  if ($trx['status']==='telah_diserahkan') return;
+  if ($trx['metode_pengiriman']==='kirim') {
+    if ($trx['status']!=='dikirim') throw new Exception('Pesanan harus berstatus dikirim sebelum dicatat telah diserahkan.',409);
+  } else {
+    if ($trx['status']!=='diproses' || !(int)$trx['siap_diambil']) throw new Exception('Pesanan harus siap diambil sebelum dicatat telah diserahkan.',409);
+  }
+  oq("UPDATE transaksi SET status='telah_diserahkan',batas_konfirmasi=DATE_ADD(NOW(),INTERVAL 24 HOUR) WHERE kode_transaksi=?",[$code]);
+  recordOrderEvent($code,'telah_diserahkan','Barang telah diserahkan kepada penerima. Menunggu konfirmasi pelanggan maksimal 24 jam.',$staff);
+}
+
 function lockProducts(array $codes): void
 {
   sort($codes, SORT_STRING);
@@ -98,6 +115,27 @@ function expireOrders(): void
     } catch (Throwable $e) { db()->rollback(); throw $e; }
   }
 }
+// Penyelesaian otomatis pesanan online 24 jam setelah admin mencatat serah terima.
+// Jalankan melalui scripts/complete_expired_deliveries.php (cron/scheduled task).
+function expireDeliveredOrders(int $limit = 100): int
+{
+  $limit=max(1,min(500,$limit));
+  $rows=oq("SELECT kode_transaksi FROM transaksi WHERE sumber_transaksi='online' AND status='telah_diserahkan' AND status_bayar='lunas' AND batas_konfirmasi IS NOT NULL AND batas_konfirmasi<=NOW() ORDER BY batas_konfirmasi ASC LIMIT {$limit}")->fetch_all(MYSQLI_ASSOC);
+  $completed=0;
+  foreach ($rows as $row) {
+    db()->begin_transaction();
+    try {
+      $trx=orderRow($row['kode_transaksi'],true);
+      if ($trx && $trx['sumber_transaksi']==='online' && $trx['status']==='telah_diserahkan' && $trx['status_bayar']==='lunas' && !empty($trx['batas_konfirmasi']) && strtotime($trx['batas_konfirmasi'])<=time()) {
+        completeOrder($trx['kode_transaksi'],null,'selesai_otomatis');
+        $completed++;
+      }
+      db()->commit();
+    } catch (Throwable $e) { db()->rollback(); error_log('Auto-complete '.$row['kode_transaksi'].': '.$e->getMessage()); }
+  }
+  return $completed;
+}
+
 function orderItems(array $input): array
 {
   if (empty($input['detail']) || !is_array($input['detail']) || count($input['detail'])>100) throw new Exception('Isi pesanan tidak valid.',422);
@@ -183,15 +221,14 @@ function createOrder(array $input, array $user, bool $cashier = false): string
   }
 }
 // Dipanggil di dalam transaksi database dengan baris pesanan terkunci.
-function completeOrder(string $code, ?int $staff = null): void
+function completeOrder(string $code, ?int $staff = null, string $completionEvent = 'selesai'): void
 {
   if (func_num_args()<2) $staff=$_SESSION['user']['id_pengguna'] ?? null;
   $trx=orderRow($code,true);
   if (!$trx || $trx['status_bayar']!=='lunas') throw new Exception('Pesanan harus sudah lunas.',409);
   if ($trx['status']==='selesai') return;
-  if ($trx['sumber_transaksi']==='online' && $trx['metode_pengiriman']==='ambil' && !(int)$trx['siap_diambil']) throw new Exception('Pesanan harus siap diambil sebelum diselesaikan.',409);
-  $expected=$trx['metode_pengiriman']==='kirim' ? 'dikirim' : 'diproses';
-  if ($trx['status']!==$expected) throw new Exception($expected==='dikirim' ? 'Pesanan pengiriman harus sudah dikirim sebelum diselesaikan.' : 'Pesanan harus sudah diproses.',409);
+  $expected=$trx['sumber_transaksi']==='online' ? 'telah_diserahkan' : 'diproses';
+  if ($trx['status']!==$expected) throw new Exception($trx['sumber_transaksi']==='online' ? 'Pesanan harus sudah dicatat telah diserahkan kepada penerima.' : 'Transaksi kasir harus sudah diproses.',409);
   $items=oq('SELECT * FROM detail_transaksi WHERE kode_transaksi=? ORDER BY kode_produk',[$code])->fetch_all(MYSQLI_ASSOC);
   lockProducts(array_column($items,'kode_produk'));
   $totalCost=0;
@@ -215,7 +252,8 @@ function completeOrder(string $code, ?int $staff = null): void
     refreshAvailableStock($product);
   }
   oq("UPDATE transaksi SET status='selesai',total_pokok=?,tanggal_selesai=NOW() WHERE kode_transaksi=?",[round($totalCost,2),$code]);
-  recordOrderEvent($code,'selesai','Barang diterima. Pesanan selesai.',$staff);
+  $completionNote=$completionEvent==='selesai_otomatis' ? 'Pesanan selesai otomatis karena batas konfirmasi 24 jam telah berakhir.' : ($completionEvent==='konfirmasi_penerimaan' ? 'Pelanggan mengonfirmasi bahwa pesanan telah diterima.' : 'Transaksi kasir selesai.');
+  recordOrderEvent($code,$completionEvent,$completionNote,$staff);
 }
 function cancelOrder(string $code, bool $customer=false): void
 {

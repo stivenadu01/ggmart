@@ -263,28 +263,9 @@
         const action=utils.orderAction(this.trx);
         if (!action || this.processing || !await Alpine.store('ui').confirm(action.question)) return;
         this.processing=true;
-        try { await API.post(utils.orderEndpoint(action),{ kode_transaksi:this.trx.kode_transaksi }); window.location.replace(BASE_URL + (this.trx.sumber_transaksi === 'kasir' ? '/admin/kasir' : '/admin/pesanan?tahap=' + (action.endpoint === 'kirim' ? 'dikirim' : ['konfirmasi','tunai'].includes(action.endpoint) ? 'selesai' : 'diproses'))); }
+        try { await API.post(utils.orderEndpoint(action),{ kode_transaksi:this.trx.kode_transaksi }); window.location.replace(BASE_URL + (this.trx.sumber_transaksi === 'kasir' ? '/admin/kasir' : '/admin/pesanan?tahap=' + (action.endpoint === 'kirim' ? 'dikirim' : ['serahkan','tunai'].includes(action.endpoint) ? 'telah_diserahkan' : 'diproses'))); }
         catch (e) { this.error=e.message; }
         finally { this.processing=false; }
-      },
-
-      async konfirmasi() {
-        const ok = await Alpine.store('ui').confirm('Pastikan barang sudah diterima pelanggan. Selesaikan pesanan ini?')
-        if (!ok) return
-        this.processing = true
-        try {
-          const res = await API.post('/transaksi/konfirmasi', {
-            kode_transaksi: this.trx.kode_transaksi
-          })
-          if (!res.success) throw new Error(res.message || 'Gagal mengonfirmasi pesanan')
-          Alpine.store('ui').toast('Pesanan dikonfirmasi')
-          await this.load()
-        } catch (err) {
-          console.error(err)
-          Alpine.store('ui').toast(err?.message || 'Gagal mengonfirmasi pesanan')
-        } finally {
-          this.processing = false
-        }
       },
 
       async batal() {

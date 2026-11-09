@@ -119,7 +119,7 @@
             </template>
           </div>
 
-          <div class="px-4 pb-3 text-sm text-slate-600 sm:px-5"><span x-text="t.metode_pengiriman === 'kirim' ? 'Pengiriman lokal — ' + t.kelurahan : 'Ambil di tempat'"></span><span class="ml-2" x-text="({belum_bayar:'Belum dibayar',lunas:'Lunas',menunggu_verifikasi:'Menunggu verifikasi',ditolak:'Bukti ditolak',kedaluwarsa:'Kedaluwarsa',perlu_refund:'Menunggu pengembalian dana',dikembalikan:'Dana dikembalikan'})[t.status_bayar]"></span></div>
+          <div class="px-4 pb-3 text-sm text-slate-600 sm:px-5"><span x-text="t.metode_pengiriman === 'kirim' ? 'Pengiriman lokal — ' + t.kelurahan : 'Ambil di tempat'"></span><span class="ml-2" x-text="({belum_bayar:'Belum dibayar',lunas:'Lunas',menunggu_verifikasi:'Menunggu verifikasi',ditolak:'Bukti ditolak',kedaluwarsa:'Kedaluwarsa',perlu_refund:'Menunggu pengembalian dana',dikembalikan:'Dana dikembalikan'})[t.status_bayar]"></span><p x-show="t.status === 'telah_diserahkan' && t.batas_konfirmasi" class="mt-2 text-xs font-medium text-amber-700">Konfirmasi sebelum <span x-text="utils.formatDateTime(t.batas_konfirmasi)"></span> WITA.</p></div>
           <div class="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/70 p-4 sm:flex-row sm:items-center sm:justify-end sm:p-5">
             <button type="button"
               class="user-action-danger user-mobile-action sm:w-auto"
@@ -128,6 +128,7 @@
               @click="batal(t)">
               <span x-text="t.cancelling ? 'Membatalkan...' : 'Batalkan Pesanan'"></span>
             </button>
+            <button type="button" x-show="t.status === 'telah_diserahkan' && t.sumber_transaksi === 'online'" class="user-action-primary user-mobile-action sm:w-auto" :disabled="t.confirming" @click="confirmReceipt(t)"><span x-text="t.confirming ? 'Mengonfirmasi...' : 'Konfirmasi Penerimaan Pesanan'"></span></button>
             <a :href="BASE_URL + '/pembayaran/' + encodeURIComponent(t.kode_transaksi)" class="user-action-outline user-mobile-action sm:w-auto">Detail & Riwayat Pesanan</a>
             <a target="_blank"
               rel="noopener noreferrer"
@@ -165,6 +166,7 @@
         { value: 'menunggu_verifikasi', label: 'Menunggu Verifikasi' },
         { value: 'diproses', label: 'Diproses' },
         { value: 'dikirim', label: 'Dikirim' },
+        { value: 'telah_diserahkan', label: 'Menunggu Konfirmasi' },
         { value: 'selesai', label: 'Selesai' },
         { value: 'dibatalkan', label: 'Dibatalkan' }
       ],
@@ -240,6 +242,22 @@
         }
       },
 
+      async confirmReceipt(transaksi) {
+        if (transaksi.confirming || transaksi.status !== 'telah_diserahkan') return;
+        const ok = await Alpine.store('ui').confirm(`Pastikan pesanan ${transaksi.kode_transaksi} sudah diterima. Konfirmasi penerimaan?`);
+        if (!ok) return;
+        transaksi.confirming = true;
+        try {
+          const res = await API.post('/transaksi/konfirmasi-penerimaan', { kode_transaksi: transaksi.kode_transaksi });
+          if (!res.success) throw new Error(res.message || 'Gagal mengonfirmasi penerimaan');
+          Alpine.store('ui').toast('Penerimaan pesanan berhasil dikonfirmasi');
+          await this.load();
+        } catch (err) {
+          Alpine.store('ui').toast(err?.message || 'Gagal mengonfirmasi penerimaan', 'error');
+          transaksi.confirming = false;
+        }
+      },
+
       async batal(transaksi) {
         const ok = await Alpine.store('ui').confirm(`Yakin ingin membatalkan pesanan ${transaksi.kode_transaksi}?`)
         if (!ok) return
@@ -265,6 +283,7 @@
           menunggu_verifikasi: 'Menunggu Verifikasi',
           diproses: 'Diproses',
           dikirim: 'Dikirim',
+          telah_diserahkan: 'Menunggu Konfirmasi Penerimaan',
           selesai: 'Selesai',
           dibatalkan: 'Dibatalkan'
         }[status] || status
@@ -275,6 +294,7 @@
           pending: 'status-warning',
           diproses: 'status-neutral',
           dikirim: 'status-neutral',
+          telah_diserahkan: 'status-warning',
           selesai: 'status-success',
           dibatalkan: 'status-danger'
         }[status] || 'status-neutral'

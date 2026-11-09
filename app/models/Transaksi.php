@@ -69,7 +69,7 @@ function getTransaksiList(
       'menunggu_pembayaran'=>"t.status='pending' AND t.status_bayar IN ('belum_bayar','ditolak')",
       'menunggu_verifikasi'=>"t.status='pending' AND t.status_bayar='menunggu_verifikasi'",
       'diproses'=>"(t.status='diproses' OR (t.status='pending' AND t.status_bayar='lunas'))",
-      'dikirim'=>"t.status='dikirim'", 'selesai'=>"t.status='selesai'", 'dibatalkan'=>"t.status='dibatalkan'"
+      'dikirim'=>"t.status='dikirim'", 'telah_diserahkan'=>"t.status='telah_diserahkan'", 'selesai'=>"t.status='selesai'", 'dibatalkan'=>"t.status='dibatalkan'"
   ];
   // Jumlah per tab memakai filter yang sama, tanpa tahap dan tanpa paginasi.
   $stageCounts = [];

@@ -1,7 +1,7 @@
 <?php
 class ApiTransaksiController
 {
-  public function __construct() { model('Transaksi'); model('DetailTransaksi'); expireOrders(); }
+  public function __construct() { model('Transaksi'); model('DetailTransaksi'); expireOrders(); expireDeliveredOrders(); }
   public function list()
   {
     try {
@@ -10,7 +10,7 @@ class ApiTransaksiController
       $owner=in_array($user['role'],['admin','pimpinan'],true) ? query('user') : $user['id_pengguna'];
       $source=query('sumber'); $stage=query('tahap');
       if ($source!==null && !in_array($source,['online','kasir'],true)) throw new Exception('Jenis transaksi tidak valid.',422);
-      if ($stage!==null && !in_array($stage,['menunggu_pembayaran','menunggu_verifikasi','diproses','dikirim','selesai','dibatalkan'],true)) throw new Exception('Tahap pesanan tidak valid.',422);
+      if ($stage!==null && !in_array($stage,['menunggu_pembayaran','menunggu_verifikasi','diproses','dikirim','telah_diserahkan','selesai','dibatalkan'],true)) throw new Exception('Tahap pesanan tidak valid.',422);
       [$data,$total,$summary,$stageCounts]=getTransaksiList($page,$limit,trim(query('search','')),query('start'),query('end'),query('metode'),$owner,query('status'),$stage,$source,$source==='online');
       foreach ($data as &$row) unset($row['checkout_key'],$row['bukti_bayar']);
       unset($row);
@@ -47,7 +47,8 @@ class ApiTransaksiController
   public function proses_transaksi() { $this->change('proses'); }
   public function kirim_transaksi() { $this->change('kirim'); }
   public function siap_ambil() { $this->change('siap-ambil'); }
-  public function konfirmasi_transaksi() { $this->change('selesai'); }
+  public function serahkan_ke_penerima() { $this->change('serahkan'); }
+  public function konfirmasi_penerimaan() { $this->change('konfirmasi-penerimaan',true); }
   public function batal_transaksi() { $this->change('batal'); }
   public function batal_transaksi_pending() { $this->change('batal',true); }
   private function change(string $action,bool $customer=false): void
@@ -75,16 +76,27 @@ class ApiTransaksiController
             oq('UPDATE pengiriman SET siap_diambil=1 WHERE kode_transaksi=?',[$code]);
             if (!(int)$trx['siap_diambil']) recordOrderEvent($code,'siap_diambil','Pesanan siap diambil di GGmart.',(int)$_SESSION['user']['id_pengguna']);
           }
+        } elseif ($action==='serahkan') {
+          if ($trx['status']==='telah_diserahkan') throw new Exception('Pesanan sudah dicatat telah diserahkan.',409);
+          markOrderDelivered($code,(int)$_SESSION['user']['id_pengguna']);
+        } elseif ($action==='konfirmasi-penerimaan') {
+          if (!$customer || $trx['sumber_transaksi']!=='online' || (int)$trx['id_pengguna']!==(int)$_SESSION['user']['id_pengguna']) throw new Exception('Hanya pemilik pesanan yang dapat mengonfirmasi penerimaan.',403);
+          if ($trx['status']!=='telah_diserahkan') throw new Exception('Pesanan belum dicatat telah diserahkan oleh admin.',409);
+          if ($trx['status_bayar']!=='lunas') throw new Exception('Pesanan harus sudah lunas.',409);
+          if (empty($trx['batas_konfirmasi'])) throw new Exception('Batas konfirmasi pesanan tidak ditemukan. Hubungi admin.',409);
+          if (strtotime($trx['batas_konfirmasi'])<=time()) completeOrder($code,null,'selesai_otomatis');
+          else completeOrder($code,(int)$_SESSION['user']['id_pengguna'],'konfirmasi_penerimaan');
         } elseif ($action==='selesai') completeOrder($code);
         else cancelOrder($code,$customer);
         db()->commit();
       } catch (Throwable $e) { db()->rollback(); throw $e; }
-      response(['success'=>true,'message'=>['proses'=>'Pesanan diproses.','kirim'=>'Pesanan sedang dikirim.','siap-ambil'=>'Pesanan siap diambil.','selesai'=>'Pesanan selesai dan sudah diterima.','batal'=>'Pesanan dibatalkan.'][$action]]);
+      $message=$action==='konfirmasi-penerimaan' && strtotime((string)($trx['batas_konfirmasi'] ?? '1970-01-01'))<=time() ? 'Batas konfirmasi telah berakhir. Pesanan diselesaikan otomatis.' : (['proses'=>'Pesanan diproses.','kirim'=>'Pesanan diserahkan kepada petugas pengiriman.','siap-ambil'=>'Pesanan siap diambil.','serahkan'=>'Penyerahan kepada penerima berhasil dicatat. Pelanggan memiliki waktu 24 jam untuk konfirmasi.','konfirmasi-penerimaan'=>'Penerimaan pesanan berhasil dikonfirmasi.','selesai'=>'Pesanan selesai.','batal'=>'Pesanan dibatalkan.'][$action] ?? 'Tindakan berhasil.');
+      response(['success'=>true,'message'=>$message]);
     } catch (Throwable $e) { orderError($e); }
   }
   public function badge()
   {
-    try { $total=oq("SELECT COUNT(*) total FROM transaksi WHERE sumber_transaksi='online' AND status IN ('pending','diproses','dikirim')")->fetch_assoc()['total']; response(['success'=>true,'data'=>['total'=>(int)$total]]); }
+    try { $total=oq("SELECT COUNT(*) total FROM transaksi WHERE sumber_transaksi='online' AND status IN ('pending','diproses','dikirim','telah_diserahkan')")->fetch_assoc()['total']; response(['success'=>true,'data'=>['total'=>(int)$total]]); }
     catch (Throwable $e) { orderError($e); }
   }
   // Kasir melihat pesanan masuk tanpa memperoleh akses ke data keuangan pelanggan.

@@ -11,6 +11,8 @@
     </div>
     <div class="rounded-xl bg-emerald-50 p-4"><p class="text-sm text-emerald-800">Total pembayaran</p><p class="text-2xl font-bold text-emerald-800" x-text="utils.formatRupiah(trx.total_tagihan)"></p></div>
     <p x-show="trx.status === 'pending' && trx.batas_bayar && ['belum_bayar','ditolak'].includes(trx.status_bayar)" class="text-sm text-amber-700">Bayar sebelum <span x-text="utils.formatDateTime(trx.batas_bayar)"></span> WITA.</p>
+    <p x-show="trx.status === 'telah_diserahkan' && trx.batas_konfirmasi" class="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">Konfirmasi penerimaan sebelum <strong x-text="utils.formatDateTime(trx.batas_konfirmasi)"></strong> WITA. Jika tidak dikonfirmasi, pesanan akan selesai otomatis setelah batas waktu.</p>
+    <button x-show="role === 'pelanggan' && trx.sumber_transaksi === 'online' && trx.status === 'telah_diserahkan'" type="button" class="user-action-primary w-full" @click="confirmReceipt()" :disabled="busy">Konfirmasi Penerimaan Pesanan</button>
     <p x-show="trx.catatan_bayar" class="rounded-xl bg-amber-50 p-3 text-sm" x-text="trx.catatan_bayar"></p>
     <template x-if="['transfer','qris'].includes(trx.metode_bayar)"><div class="space-y-3"><h3 class="font-semibold" x-text="trx.metode_bayar === 'qris' ? 'Pembayaran QRIS' : 'Transfer manual'"></h3>
       <div x-show="trx.metode_bayar === 'qris' && trx.status_bayar !== 'lunas'" class="rounded-xl border border-slate-200 p-4 text-center">

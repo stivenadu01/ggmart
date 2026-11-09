@@ -43,7 +43,7 @@
 function pesananPage() {
   return {
     data: [], search: utils.getQuery('search') || '', metode: utils.getQuery('metode') || '', stage: 'menunggu_pembayaran', loading: false, error: '', processing: false, requestId: 0,
-    tabs: [{ value: 'menunggu_pembayaran', label: 'Menunggu Pembayaran' }, { value: 'menunggu_verifikasi', label: 'Menunggu Verifikasi' }, { value: 'diproses', label: 'Diproses' }, { value: 'dikirim', label: 'Dikirim' }],
+    tabs: [{ value: 'menunggu_pembayaran', label: 'Menunggu Pembayaran' }, { value: 'menunggu_verifikasi', label: 'Menunggu Verifikasi' }, { value: 'diproses', label: 'Diproses' }, { value: 'dikirim', label: 'Dikirim' }, { value: 'telah_diserahkan', label: 'Menunggu Konfirmasi' }],
     stageCounts: null,
     pagination: { page: 1, limit: 10, total: 0, total_pages: 1 },
     async init() { const value=utils.getQuery('tahap'); if (value === 'selesai') { window.location.replace(BASE_URL + '/admin/transaksi?status=selesai'); return; } if (this.tabs.some(t => t.value === value)) this.stage=value; await this.load(); },
@@ -67,10 +67,9 @@ function pesananPage() {
       this.processing=true;
       try {
         await API.post(utils.orderEndpoint(action),{ kode_transaksi:item.kode_transaksi });
-        if (['konfirmasi','tunai'].includes(action.endpoint)) {
-          this.pagination.page=1;
-          await this.load();
-          Alpine.store('ui').toast('Pesanan selesai. Tersimpan di Riwayat Transaksi.');
+        if (action.endpoint === 'tunai' || action.endpoint === 'serahkan') {
+          await this.changeStage('telah_diserahkan');
+          Alpine.store('ui').toast('Penyerahan dicatat. Menunggu konfirmasi pelanggan.');
         } else await this.changeStage(action.endpoint === 'kirim' ? 'dikirim' : 'diproses');
       }
       catch (e) { this.error=e.message; } finally { this.processing=false; }

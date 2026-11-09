@@ -52,7 +52,7 @@ function queueOrderNotifications(int $history, string $code, string $event, stri
         $toCustomer('Pembayaran diterima, pesanan diproses', $code . '. Pembayaran terkonfirmasi. Pesanan mulai disiapkan.');
       }
       // Pembayaran tunai di kasir merupakan tindakan petugas sendiri.
-      if ($online || $trx['metode_bayar'] !== 'tunai') $toAdmins('Pembayaran telah diterima', $label . ($online && $trx['metode_bayar'] !== 'tunai' ? '. Pesanan mulai disiapkan.' : '. Transaksi selesai.'));
+      if ($online || $trx['metode_bayar'] !== 'tunai') $toAdmins('Pembayaran telah diterima', $label . ($online && $trx['metode_bayar'] === 'tunai' ? '. Uang tunai diterima saat pengambilan; menunggu konfirmasi penerimaan pelanggan.' : ($online ? '. Pesanan mulai disiapkan.' : '. Transaksi selesai.')));
       $toCashier('Pembayaran diterima', $code . '. Transaksi selesai. Struk sudah tersedia.');
       break;
     case 'diproses':
@@ -68,6 +68,16 @@ function queueOrderNotifications(int $history, string $code, string $event, stri
       break;
     case 'dikirim':
       $toCustomer('Pesanan sedang dikirim', $code . '. Pesanan sudah diserahkan kepada pengantar.');
+      break;
+    case 'telah_diserahkan':
+      $toCustomer('Pesanan telah diserahkan', $code . '. Barang telah diserahkan kepada penerima. Silakan konfirmasi penerimaan dalam 24 jam.');
+      break;
+    case 'konfirmasi_penerimaan':
+      $toCustomer('Penerimaan pesanan dikonfirmasi', $code . '. Anda telah mengonfirmasi penerimaan pesanan.');
+      break;
+    case 'selesai_otomatis':
+      $toCustomer('Pesanan selesai otomatis', $code . '. Pesanan diselesaikan karena batas konfirmasi 24 jam telah berakhir.');
+      $toAdmins('Pesanan selesai otomatis', $code . '. Batas konfirmasi penerimaan telah berakhir.', false);
       break;
     case 'selesai':
       $toCustomer('Pesanan selesai', $code . '. Pesanan sudah diterima. Detail pesanan dan struk tersedia.');
